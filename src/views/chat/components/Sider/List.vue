@@ -71,8 +71,8 @@ async function handleDelete({conversationId}: Chat.History, event?: MouseEvent |
   await deleteConversation(conversationId)
   chatStore.deleteHistory(conversationId)
   chatStore.setActive('')
-  // if (isMobile.value)
-  //   appStore.setSiderCollapsed(true)
+  if (isMobile.value)
+    appStore.setSiderCollapsed(true)
 }
 
 const handleDeleteDebounce = debounce(handleDelete, 600)
