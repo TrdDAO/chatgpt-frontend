@@ -4,7 +4,7 @@ pipeline {
         stage('build') {
             agent { docker { image 'node:latest' } }
             steps {
-                sh 'npm install -g pnpm'
+                sh 'npm install pnpm'
                 sh 'pnpm install'
                 sh 'pnpm run build'
 
