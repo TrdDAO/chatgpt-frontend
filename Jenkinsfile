@@ -4,7 +4,7 @@ pipeline {
         stage('build') {
             agent { docker { image 'node:latest' } }
             steps {
-                sh 'curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm'
+                sh 'npm install -g pnpm'
                 sh 'pnpm install'
                 sh 'pnpm run build'
 
