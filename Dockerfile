@@ -1,16 +1,5 @@
-FROM node:16.18.0
+FROM nginx:alpine
 
-WORKDIR /usr/src/app
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY dist /usr/share/nginx/html
 
-COPY package*.json /usr/src/app
-RUN npm install -g pnpm
-RUN pnpm install
-
-COPY . /usr/src/app
-
-RUN npm run build
-
-EXPOSE 5000
-
-ENTRYPOINT ["npm", "run"]
-CMD ["server"]
