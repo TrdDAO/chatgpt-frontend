@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import dayjs from 'dayjs'
 import type { Ref } from 'vue'
 import { computed, watch, onMounted, onUnmounted, ref, reactive, nextTick, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
@@ -70,7 +71,14 @@ onMounted(() => {
   }
   // 查询列表数据
   resetPageData(() => {
-    return getConversationMessages(conversationId, {page: page.value, size: size.value})
+    return getConversationMessages(conversationId, {page: page.value, size: size.value}).then((res) => {
+      console.log(res)
+      res.content = res.content.map(item => {
+        item.timeString = dayjs(item.time).format('YYYY-MM-DD HH:mm:ss');
+        return item
+      })
+      return Promise.resolve(res)
+    })
   }, {
     success: async() => {
       chatStore.addChatMessages(conversationId, data.value)
@@ -103,15 +111,20 @@ async function onConversation() {
     role: 'USER',
     status: 'Processing',
     time: +new Date(),
+    timeString: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     loading: false,
   }])
 
   scrollToBottom()
 
+  // 数据处理中
   pending.value = true
 
-  let options: Chat.ConversationRequest = {}
+  // 服务器响应时间
   let assistantTime:number|null = null
+
+  // 数据处理队列，防止响应过快，js处理被打乱
+  let dataQueue:string[][] = [];
   try {
     let lastText = ''
     const fetchChatAPIOnce = async () => {
@@ -125,31 +138,31 @@ async function onConversation() {
           prompt.value = ''
           const xhr = event.target
           const { responseText } = xhr
-          
-          try {
-            // 返回的 content 个数不固定
-            const lines = responseText.replace(lastText, '').split('\n\n')
-            // console.log(responseText.replace(lastText, ''))
-            lastText = responseText
-            let currentIndex = 0;
-
-            function showNextChar() {
-              const line = lines[currentIndex]
-              const index = line.indexOf('content":"')
-              if (index > -1) {
-                const dataString = line.substring(index + 10, line.length - 2)
-                // 内容处理
-                renderData.content += dataString.replace(/\\n/g, '\n').replace('`', '\`');
-                renderData.loading = true
+        
+          // 每次返回的 prompt 个数不固定
+          const newPrompts = responseText.replace(lastText, '').split('\n\n').filter((item:string) => item);
+          lastText = responseText;
+          dataQueue.push(newPrompts);
+          try { 
+            while(dataQueue.length) {
+              const lines = dataQueue.shift() as string[];
+              let currentIndex = 0;
+              function showNextChar() {
+                const line = lines[currentIndex]
+                const index = line.indexOf('content":"')
+                if (index > -1) {
+                  const dataString = line.substring(index + 10, line.length - 2)
+                  // 内容处理
+                  renderData.content += dataString.replace(/\\n/g, '\n').replace('`', '\`');
+                  renderData.loading = true
+                }
+                currentIndex++;
+                if (currentIndex < lines.length) {
+                  window.requestAnimationFrame(showNextChar);
+                }
               }
-              currentIndex++;
-              if (currentIndex < lines.length) {
-                window.requestAnimationFrame(showNextChar);
-              }
+              window.requestAnimationFrame(showNextChar);
             }
-
-            window.requestAnimationFrame(showNextChar);
-
             scrollToBottomIfAtBottom()
           } catch(error) {
             console.log(error)
@@ -170,11 +183,14 @@ async function onConversation() {
         role: 'ASSISTANT',
         status: 'Processing',
         time: assistantTime || +new Date(),
+        timeString: dayjs(assistantTime).format('YYYY-MM-DD HH:mm:ss'),
         loading: false,
       }])
-      // 删除临时渲染的节点
-      renderData.content = '';
-      renderData.loading = false
+      nextTick(() => {
+        // 删除临时渲染的节点
+        renderData.content = '';
+        renderData.loading = false;
+      })
     }
     // if (error.message === 'canceled') {
     //   updateChatSome(
@@ -336,7 +352,13 @@ const handleScrollThrottle = onTop(() => {
   if(!conversationId) return
   // 查询列表数据
   getPageData(() => {
-    return getConversationMessages(conversationId, {page: page.value, size: size.value})
+    return getConversationMessages(conversationId, {page: page.value, size: size.value}).then((res) => {
+      res.content = res.content.map(item => {
+        item.timeString = dayjs(item.time).format('YYYY-MM-DD HH:mm:ss');
+        return item
+      })
+      return Promise.resolve(res)
+    })
   }, {
     success: async() => {
       chatStore.unShiftChatMessages(conversationId, data.value)
@@ -498,7 +520,7 @@ onUnmounted(() => {
               <Message
                 v-for="(item, index) of dataSources"
                 :key="index"
-                :date-time="String(item.time)"
+                :date-time="item.timeString"
                 :text="item.content"
                 :inversion="item.role === 'USER' ? true : false"
                 :error="item.errorInfo ? true : false"
@@ -509,7 +531,7 @@ onUnmounted(() => {
               <Message
                 v-if="renderData.content"
                 :key="'render'"
-                :date-time="String(renderData.time)"
+                :date-time="renderData.timeString"
                 :text="renderData.content"
                 :inversion="renderData.role === 'USER' ? true : false"
                 :error="renderData.errorInfo ? true : false"

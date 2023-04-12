@@ -118,7 +118,7 @@ onMounted(() => {
   getPageData(() => {
     return getConversations({page: page.value, size: size.value}).then((res) => {
       res.content = res.content.map(item => {
-        item.originName = item.name
+        item.originName = item.name;
         return item
       })
       return Promise.resolve(res)

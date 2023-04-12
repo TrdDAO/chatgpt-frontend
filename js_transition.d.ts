@@ -19,6 +19,7 @@ interface ImportMetaEnv {
 
 declare namespace Chat {
 
+	// 会话详情
 	interface Message {
 		content: string
 		errorInfo: string | null
@@ -26,6 +27,7 @@ declare namespace Chat {
 		role: 'USER' | 'ASSISTANT'
 		status: 'Succeeded' | 'Processing' | 'Failed'
 		time: number
+		timeString?:string
 		loading?: boolean
 	}
 
