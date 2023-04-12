@@ -4,7 +4,7 @@ pipeline {
         stage('build') {
             agent { dockerfile { filename 'Dockerfile.ci' } }
             steps {
-                sh 'pnpm install'
+                sh 'pnpm install --no-frozen-lockfile'
                 sh 'pnpm run build'
 
                 stash includes: "dist/", name: "dist"
