@@ -1,3 +1,4 @@
+import { isType } from '../isType'
 /**
  * 转义 HTML 字符
  * @param source
@@ -47,4 +48,15 @@ export function copyText(options: { text: string; origin?: boolean }) {
       document.execCommand('copy', true)
     document.body.removeChild(input)
   }
+}
+
+/**
+ * 请求的对象转字符串
+ */
+export const obj2UrlString = (queryParams:any):string => {
+  return queryParams ?
+    isType(queryParams, 'object') ? 
+      Object.entries(queryParams).map((item:any) => `${item[0]}=${encodeURIComponent(item[1])}`).join('&')
+      : String(queryParams) 
+    : ''
 }

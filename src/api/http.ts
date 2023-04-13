@@ -1,6 +1,9 @@
-import type { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from 'axios'
-import axiosInstance from './axios'
-import { useAuthStore } from '@/store'
+import type { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from 'axios';
+import axiosInstance from './axios';
+import { baseURL } from '@/api/axios';
+import { obj2UrlString } from '@/utils/format/index';
+import { useAuthStoreWithout } from '@/store';
+import SSE from './sse.js';
 
 export interface HttpOption {
   method?: string
@@ -9,6 +12,15 @@ export interface HttpOption {
   headers?: any
   onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
   signal?: GenericAbortSignal
+  beforeRequest?: () => void
+  afterRequest?: () => void
+}
+
+export interface SSEOption {
+  method?: string
+  params?:object
+  data?: any
+  headers?: any
   beforeRequest?: () => void
   afterRequest?: () => void
 }
@@ -39,7 +51,7 @@ function http<T = any>(
   // 业务状态处理
   // res直接为 AxiosResponse.data 业务数据，但axios强制是 AxiosResponse，这里用any，其实为 Response<T>
   const successHandler = (res: any): Promise<T> => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStoreWithout()
     // 某些方法没有返回值
     if(!res) {
       return Promise.resolve(res)
@@ -140,4 +152,19 @@ export function delet<T = any>(
     beforeRequest,
     afterRequest,
   })
+}
+
+export function sse(
+  url:string,
+  { params, data, method='GET', headers, }: SSEOption) {
+    const authStore = useAuthStoreWithout()
+    return new SSE(`${baseURL}${url}?${obj2UrlString(params)}`, {
+      method,
+      headers: Object.assign({
+        'Content-Type': 'application/json',
+        Authorization: authStore.token,
+      }, headers),
+      withCredentials: true,
+      payload: JSON.stringify(data)
+    })
 }

@@ -14,7 +14,7 @@ import HeaderComponent from '../Header/index.vue'
 import { HoverButton, SvgIcon } from '@/components'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
-import { getConversationMessages, postConversationMessages } from '@/service/chat'
+import { getConversationMessages, postConversationMessages, postMessageWithSSE } from '@/service/chat'
 import { usePagination } from '@/hooks/usePagination'
 import { throttle } from '@/utils/functions/throttle'
 import { t } from '@/locales'
@@ -91,6 +91,8 @@ function handleSubmit() {
   onConversation()
 }
 
+const scrollToBottomThrottle  = throttle(scrollToBottom, 600)
+
 // 发送消息
 async function onConversation() {
   let message = prompt.value
@@ -120,7 +122,42 @@ async function onConversation() {
   pending.value = true
 
   // 服务器响应时间
-  let assistantTime:number|null = null
+  const assistantTime:number|null = +new Date();
+
+  const source = postMessageWithSSE(conversationId, {content: prompt.value})
+  source.addEventListener('message', function(e:any) {
+    prompt.value = '';
+    const payload = JSON.parse(e.data);
+    renderData.content += payload.content;
+    renderData.loading = true;
+    scrollToBottomThrottle()
+  });
+
+  source.addEventListener('load', function(e:any) {
+    prompt.value = '';
+  });
+
+  source.addEventListener('close', function(e:any) {
+    pending.value = false;
+    chatStore.addChatMessages(conversationId, [{
+      content: renderData.content,
+      errorInfo: null,
+      messageId: 'assistant-chat-last',
+      role: 'ASSISTANT',
+      status: 'Processing',
+      time: assistantTime || +new Date(),
+      timeString: dayjs(assistantTime).format('YYYY-MM-DD HH:mm:ss'),
+      loading: false,
+    }])
+    nextTick(() => {
+      // 删除临时渲染的节点
+      renderData.content = '';
+      renderData.loading = false;
+    })
+  });
+  source.stream();
+  return
+  // 使用 Axios 不知道什么时候响应关闭，只能在catch里返回一个空
 
   // 数据处理队列，防止响应过快，js处理被打乱
   let dataQueue:string[][] = [];
@@ -130,10 +167,12 @@ async function onConversation() {
       await postConversationMessages(conversationId, {
         data: {content: prompt.value},
         signal: controller.signal,
-        onDownloadProgress: ({ event }) => {
+        onDownloadProgress: (e) => {
           if(!assistantTime) {
             assistantTime = +new Date()
           }
+          console.log(e);
+          const { event } = e;
           prompt.value = ''
           const xhr = event.target
           const { responseText } = xhr
@@ -147,13 +186,13 @@ async function onConversation() {
               const lines = dataQueue.shift() as string[];
               let currentIndex = 0;
               function showNextChar() {
-                const line = lines[currentIndex]
-                const index = line.indexOf('content":"')
+                const line = lines[currentIndex];
+                const index = line ? line.indexOf('content":"') : -1;
                 if (index > -1) {
-                  const dataString = line.substring(index + 10, line.length - 2)
+                  const dataString = line.substring(index + 10, line.length - 2);
                   // 内容处理
                   renderData.content += dataString.replace(/\\n/g, '\n').replace('`', '\`');
-                  renderData.loading = true
+                  renderData.loading = true;
                 }
                 currentIndex++;
                 if (currentIndex < lines.length) {
@@ -167,6 +206,10 @@ async function onConversation() {
             console.log(error)
           }
         }
+      }).then((res) => {
+        console.log(res)
+      }).catch((e) =>{ 
+        console.log(e);
       })
     }
     await fetchChatAPIOnce()
@@ -191,17 +234,6 @@ async function onConversation() {
         renderData.loading = false;
       })
     }
-    // if (error.message === 'canceled') {
-    //   updateChatSome(
-    //     +uuid,
-    //     dataSources.value.length - 1,
-    //     {
-    //       loading: false,
-    //     },
-    //   )
-    //   scrollToBottomIfAtBottom()
-    //   return
-    // }
     return
   } finally {
     pending.value = false

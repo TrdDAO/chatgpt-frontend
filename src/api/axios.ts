@@ -2,8 +2,10 @@ import axios, { type AxiosResponse } from 'axios'
 import { useAuthStore } from '@/store'
 import { useAuthStoreWithout } from '@/store/modules/auth'
 
+export const baseURL = import.meta.env.DEV ? import.meta.env.VITE_APP_API_LOCAL_URL: import.meta.env.VITE_APP_API_BASE_URL;
+
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.DEV ? import.meta.env.VITE_APP_API_LOCAL_URL: import.meta.env.VITE_APP_API_BASE_URL,
+  baseURL,
   timeout: 0,
   withCredentials: true,
 })

@@ -1,6 +1,7 @@
-import type { AxiosProgressEvent, GenericAbortSignal } from 'axios'
-import { CHAT_URL, get, post, put, delet } from '@/api/index'
-import type { Pagination } from '@/api/http'
+import type { AxiosProgressEvent, GenericAbortSignal } from 'axios';
+import { CHAT_URL, get, post, put, delet, sse } from '@/api/index';
+import type { Pagination } from '@/api/http';
+import { baseURL } from '@/api/axios'
 
 // 会话列表
 export const getConversations = async(queryParams: {page: number,size: number,sort?:string}) => {
@@ -97,4 +98,16 @@ export const postConversationMessages = async(
 		content: string,
 	}>(`${CHAT_URL}/${conversationId}/messages`,options)
 	return data
+}
+
+
+// 发送提问
+export const postMessageWithSSE = (
+	conversationId:string,
+	data: {content: string},
+) => {
+	return sse(`${CHAT_URL}/${conversationId}/messages`, {
+		data,
+		method: 'POST',
+	})
 }
