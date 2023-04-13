@@ -167,12 +167,10 @@ async function onConversation() {
       await postConversationMessages(conversationId, {
         data: {content: prompt.value},
         signal: controller.signal,
-        onDownloadProgress: (e) => {
+        onDownloadProgress: ({event}) => {
           if(!assistantTime) {
             assistantTime = +new Date()
           }
-          console.log(e);
-          const { event } = e;
           prompt.value = ''
           const xhr = event.target
           const { responseText } = xhr
