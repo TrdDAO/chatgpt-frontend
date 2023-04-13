@@ -3,7 +3,9 @@ import { pinia } from '@/store'
 import { getToken, removeToken, setToken } from './helper'
 
 interface SessionResponse {
-  auth: boolean
+  usage: number | null;
+  maxTokens: number | null;
+  model: 'gpt-3.5-turbo';
 }
 
 export interface AuthState {
@@ -11,7 +13,7 @@ export interface AuthState {
   tokenExpire: number | null,
   session: SessionResponse | null,
   model: string,
-  maxTokens: number,
+  maxTokens: number, // 单次最大token
 }
 
 export const useAuthStore = defineStore('auth-store', {
@@ -36,8 +38,8 @@ export const useAuthStore = defineStore('auth-store', {
   actions: {
     async getSession() {
       try {
-        const data = {auth: false, model: 'gpt-3.5-turbo'}
-        this.session = { ...data } as any
+        const data = {usage: 0, model: 'gpt-3.5-turbo', maxTokens: null}
+        this.session = data
         return Promise.resolve(data)
       }
       catch (error) {

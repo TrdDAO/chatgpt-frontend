@@ -72,7 +72,6 @@ onMounted(() => {
   // 查询列表数据
   resetPageData(() => {
     return getConversationMessages(conversationId, {page: page.value, size: size.value}).then((res) => {
-      console.log(res)
       res.content = res.content.map(item => {
         item.timeString = dayjs(item.time).format('YYYY-MM-DD HH:mm:ss');
         return item
@@ -453,7 +452,7 @@ const placeholder = computed(() => {
 })
 
 const buttonDisabled = computed(() => {
-  return pending.value || !prompt.value || prompt.value.trim() === ''
+  return !conversationId || pending.value || !prompt.value || prompt.value.trim() === ''
 })
 
 const footerClass = computed(() => {

@@ -34,12 +34,11 @@ const routes: RouteRecordRaw[] = [
     name: '500',
     component: () => import('@/components/500/index.vue'),
   },
-
-  // {
-  //   path: '/:pathMatch(.*)*',
-  //   name: 'notFound',
-  //   redirect: '/404',
-  // },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'notFound',
+    redirect: '/404',
+  },
 ]
 
 export const router = createRouter({
@@ -71,7 +70,7 @@ router.beforeEach(async (to, from, next) => {
 	// 	next()
 	// }
 	if(!authStore.token) {
-		// to.path === '/login'
+		to.path === '/login'
 		// next({ name: '500' })
 		next()
 	} else {

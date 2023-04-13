@@ -29,7 +29,7 @@
 					</NInputGroup>
 				</NFormItem>
 				<NFormItem>
-					<NButton block type="primary" @click="handleLogin">登录</NButton>
+					<NButton block type="primary" @click="handleLogin" :disabled="loding">登录</NButton>
 				</NFormItem>
 			</NForm>
 		</NTabPane>
@@ -56,7 +56,7 @@
 					</NInputGroup>
 				</NFormItem>
 				<NFormItem>
-					<NButton block type="primary">登录</NButton>
+					<NButton block type="primary" :disabled="loding">登录</NButton>
 				</NFormItem>
 			</NForm>
 		</NTabPane>
@@ -93,18 +93,22 @@ const emailModel = ref({
 	emailAddress: '',
 	authCode: '',
 })
+const loding = ref(false)
 
 const handleCode = () => {
 	if(isCounting) return
 	startTimer()
 }
 const handleLogin = async() => {
-	const formRef = tabType.value === 'phone' ? phoneRef.value : emailRef.value
-	const result = await formRef?.validate()
-	const requestFn = tabType.value === 'phone' ? aythByPhone : aythByEmail
+	const formRef = tabType.value === 'phone' ? phoneRef.value : emailRef.value;
+	const result = await formRef?.validate();
+	const requestFn = tabType.value === 'phone' ? aythByPhone : aythByEmail;
+	loding.value = true;
 	requestFn(tabType.value === 'phone' ? phoneModel.value : emailModel.value).then((res) => {
 		authStore.setToken(res.token, res.expiresTime)
 		router.replace({name: 'Root'})
+	}).finally(() => {
+		loding.value = false;
 	})
 }
 </script>
