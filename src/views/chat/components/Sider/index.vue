@@ -13,13 +13,15 @@ const appStore = useAppStore()
 const chatStore = useChatStore()
 const authStore = useAuthStore();
 
-const { isMobile } = useBasicLayout()
-const show = ref(false)
+const { isMobile } = useBasicLayout();
+const show = ref(false);
+const loading = ref(false);
 
 const collapsed = computed(() => appStore.siderCollapsed)
 
 // 新建聊天
 function handleAdd() {
+  loading.value = true;
   newConversation({
     name: 'New Chat',
     model: 'GPT3_5',
@@ -28,6 +30,8 @@ function handleAdd() {
     maxTokens: authStore.maxTokens
   }).then((res) => {
     chatStore.addHistory(res)
+  }).finally(() => {
+    loading.value = false;
   })
   // if (isMobile.value)
   //   appStore.setSiderCollapsed(true)
@@ -83,7 +87,7 @@ watch(
     <div class="flex flex-col h-full" :style="mobileSafeArea">
       <main class="flex flex-col flex-1 min-h-0">
         <div class="p-4">
-          <NButton dashed block @click="handleAdd">
+          <NButton dashed block @click="handleAdd" :disabled="loading" :loading="loading">
             {{ $t('chat.newChatButton') }}
           </NButton>
         </div>

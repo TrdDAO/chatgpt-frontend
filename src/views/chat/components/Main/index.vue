@@ -49,6 +49,7 @@ const renderData = reactive({
   role: 'ASSISTANT',
   status: 'Processing',
   time: +new Date(),
+  timeString: '',
   loading: false,
 })
 
@@ -135,6 +136,7 @@ async function onConversation() {
 
   source.addEventListener('load', function(e:any) {
     prompt.value = '';
+    renderData.timeString = dayjs().format('YYYY-MM-DD HH:mm:ss');
   });
 
   source.addEventListener('close', function(e:any) {

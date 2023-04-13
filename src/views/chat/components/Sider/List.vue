@@ -1,5 +1,6 @@
 <script setup lang='ts'>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { SvgIcon } from '@/components'
 import { useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
@@ -13,8 +14,11 @@ const { isMobile } = useBasicLayout()
 
 const { page, size, data, loading, noMore, getPageData, loadMore } = usePagination<Chat.History>(0, 23);
 
-const appStore = useAppStore()
-const chatStore = useChatStore()
+const appStore = useAppStore();
+const chatStore = useChatStore();
+const route = useRoute();
+
+const { conversationId } = route.params as { conversationId: string }
 
 const scrollContainerRef = ref<HTMLDivElement|null>(null)
 
@@ -126,6 +130,11 @@ onMounted(() => {
   }, {
     success: () => {
       chatStore.setHistory([...data.value])
+      if(data.value.find((item) => item.conversationId === conversationId)) {
+        nextTick(() => {
+          chatStore.setActive(conversationId);
+        })
+      }
     }
   })
 })

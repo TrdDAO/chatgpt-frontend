@@ -45,6 +45,7 @@ const wrapClass = computed(() => {
     props.inversion ? 'bg-[#d2f9d1]' : 'bg-[#f4f6f8]',
     props.inversion ? 'dark:bg-[#a1dc95]' : 'dark:bg-[#1e1e20]',
     props.inversion ? 'message-request' : 'message-reply',
+    props.inversion ? '' : 'w-full',
     { 'text-red-500': props.error },
   ]
 })
@@ -69,9 +70,9 @@ defineExpose({ textRef })
       <!-- assistant -->
       <template v-if="!inversion" class="assistant">
         <!-- 预览 -->
-        <div v-if="!asRawText" class="markdown-body inline-block" v-html="text" />
+        <div v-if="!asRawText" class="markdown-body inline-block w-full" v-html="text" />
         <!-- 原文本 -->
-        <div v-else class="whitespace-pre-wrap inline-block" v-text="text" />
+        <div v-else class="whitespace-pre-wrap inline-block w-full" v-text="text" />
         <!-- 光标闪烁 -->
         <template v-if="loading">
           <span class="dark:text-white w-[2px] h-[20px] inline-block animate-blink align-text-bottom" />

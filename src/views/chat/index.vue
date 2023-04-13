@@ -1,37 +1,37 @@
 <script setup lang='ts'>
 import { computed } from 'vue'
 import { NLayout, NLayoutContent } from 'naive-ui'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import Sider from './components/Sider/index.vue'
 import Permission from './components/Permission/index.vue'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useAppStore, useAuthStore, useChatStore } from '@/store'
 
-const router = useRouter()
-const appStore = useAppStore()
-const chatStore = useChatStore()
-const authStore = useAuthStore()
+// const router = useRouter()
+const appStore = useAppStore();
+// const chatStore = useChatStore()
+const authStore = useAuthStore();
 
-router.replace({ name: 'Chat', params: { conversationId: chatStore.active } })
+// router.replace({ name: 'Chat', params: { conversationId: chatStore.active } })
 
-const { isMobile } = useBasicLayout()
+const { isMobile } = useBasicLayout();
 
-const collapsed = computed(() => appStore.siderCollapsed)
+const collapsed = computed(() => appStore.siderCollapsed);
 
-const needPermission = computed(() => !authStore.token)
+const needPermission = computed(() => !authStore.token);
 
 const getMobileClass = computed(() => {
   if (isMobile.value)
     return ['rounded-none', 'shadow-none']
   return ['rounded-md', 'shadow-md', 'dark:border-neutral-800']
-})
+});
 
 const getContainerClass = computed(() => {
   return [
     'h-full',
     { 'pl-[260px]': !isMobile.value && !collapsed.value },
   ]
-})
+});
 </script>
 
 <template>
