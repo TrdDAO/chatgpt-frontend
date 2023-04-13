@@ -5,7 +5,7 @@ import { getToken, removeToken, setToken } from './helper'
 interface SessionResponse {
   usage: number | null;
   maxTokens: number | null;
-  model: 'gpt-3.5-turbo';
+  model: 'GPT3_5'|'GPT3_4';
 }
 
 export interface AuthState {

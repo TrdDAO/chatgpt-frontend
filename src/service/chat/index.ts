@@ -20,7 +20,7 @@ export const getConversations = async(queryParams: {page: number,size: number,so
 }
 
 // 新增会话
-export const newConversation = async(bodyParams: {name: string,model: 'gpt-3.5-turbo',temperature:number, topP:number,maxTokens:number}) => {
+export const newConversation = async(bodyParams: {name: string,model: 'GPT3_5',temperature:number, topP:number,maxTokens:number}) => {
 	const data = await post<{
 		conversationId: string,
 		ownerUserId: string,
@@ -40,7 +40,7 @@ export const editConversation = async(
 	conversationId:string, 
 	bodyParams: {
 		name: string,
-		model: 'gpt-3.5-turbo',
+		model: 'GPT3_5',
 		temperature:number,
 		topP:number,
 		maxTokens:number

@@ -21,8 +21,8 @@ const collapsed = computed(() => appStore.siderCollapsed)
 // 新建聊天
 function handleAdd() {
   newConversation({
-    name: "New Chat",
-    model: "gpt-3.5-turbo",
+    name: 'New Chat',
+    model: 'GPT3_5',
     temperature: 0.7,
     topP: 1,
     maxTokens: authStore.maxTokens

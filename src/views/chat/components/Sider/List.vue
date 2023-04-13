@@ -47,7 +47,7 @@ function handleSave({conversationId, name}: Chat.History, event?: MouseEvent) {
   chatStore.updateHistory(conversationId, {isLoading: true})
   editConversation(conversationId, {
     name,
-		model: 'gpt-3.5-turbo',
+		model: 'GPT3_5',
 		temperature: 0.7,
 		topP: 1,
 		maxTokens: 2000
