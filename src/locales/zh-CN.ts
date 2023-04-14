@@ -27,6 +27,7 @@ export default {
     verify: '验证',
     unauthorizedTips: '未经授权，请先进行验证。',
     login: '登录',
+    logout: '注销',
   },
   chat: {
     newChatButton: '新建聊天',
@@ -71,6 +72,7 @@ export default {
     socks: 'Socks',
     httpsProxy: 'HTTPS Proxy',
     balance: 'API余额',
+    model: "API版本",
   },
   store: {
     siderButton: '提示词商店',

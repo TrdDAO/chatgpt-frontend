@@ -27,6 +27,7 @@ export default {
     verify: 'Verify',
     unauthorizedTips: 'Unauthorized, please verify first.',
     login: 'Login',
+    logout: 'Logout',
   },
   chat: {
     newChatButton: 'New Chat',
@@ -71,6 +72,7 @@ export default {
     socks: 'Socks',
     httpsProxy: 'HTTPS Proxy',
     balance: 'API Balance',
+    model: "Model",
   },
   store: {
     siderButton: 'Prompt Store',

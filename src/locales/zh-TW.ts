@@ -27,6 +27,7 @@ export default {
     verify: '驗證',
     unauthorizedTips: '未經授權，請先進行驗證。',
     login: '登錄',
+    logout: '注銷',
   },
   chat: {
     newChatButton: '新建對話',
@@ -70,6 +71,7 @@ export default {
     socks: 'Socks',
     httpsProxy: 'HTTPS Proxy',
     balance: 'API余額',
+    model: "API版本",
   },
   store: {
     siderButton: '提示詞商店',

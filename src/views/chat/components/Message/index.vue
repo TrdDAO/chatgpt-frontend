@@ -114,7 +114,7 @@ function handleRegenerate() {
         <div class="flex flex-col">
           <!-- 重新发送 -->
           <button
-            v-if="!inversion"
+            v-if="error"
             class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
             @click="handleRegenerate"
           >

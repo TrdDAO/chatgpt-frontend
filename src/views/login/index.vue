@@ -1,6 +1,6 @@
 <template>
 	<div class="h-full bg-login-background">
-		<div :class=getMobileNameClass>{{appName}}</div>>
+		<div :class=getMobileNameClass>{{appName}}</div>
 		<div :class="getMobileContainer">
 			<Login/>
 		</div>

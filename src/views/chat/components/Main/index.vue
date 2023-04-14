@@ -26,6 +26,7 @@ const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 const route = useRoute()
 const dialog = useDialog()
 const ms = useMessage()
+const { conversationId } = route.params as { conversationId: string }
 
 const chatStore = useChatStore()
 
@@ -35,9 +36,10 @@ const { isMobile } = useBasicLayout()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom, onTop } = useScroll()
 const { usingContext, toggleUsingContext } = useUsingContext()
 // 会话记录分页数据
-const { page, size, data, loading, noMore, resetPageData, getPageData } = usePagination<Chat.Message>(0, 40)
-
-const { conversationId } = route.params as { conversationId: string }
+const historyData = chatStore.chat.has(conversationId) ? chatStore.chat.get(conversationId) : [];
+const { page, size, data, loading, noMore, resetPageData, getPageData } = usePagination<Chat.Message>(0, 40, {
+  historyData,
+})
 
 const prompt = ref<string>('')
 const pending = ref<boolean>(false)
@@ -379,7 +381,7 @@ function handleExport() {
   })
 }
 
-const handleScrollThrottle = onTop(() => {
+const handleScroll = onTop(() => {
   if(!conversationId) return
   // 查询列表数据
   getPageData(() => {
@@ -519,7 +521,7 @@ onUnmounted(() => {
         id="scrollRef"
         ref="scrollRef"
         class="h-full overflow-hidden overflow-y-auto"
-        @scroll="handleScrollThrottle"
+        @scroll="handleScroll"
       >
         <div
           id="image-wrapper"

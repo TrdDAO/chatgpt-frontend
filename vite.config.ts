@@ -54,7 +54,11 @@ export default defineConfig((env)=>{
       }),
     ],
     build: {
-      reportCompressedSize: true, // 
+      target: ['model', ''], // 默认  
+      assetsDir: 'assets',
+      assetsInlineLimit: 4096, // 4k用base64
+      cssCodeSplit: true, // css 
+      reportCompressedSize: true, // 异步 chunk 拆分
       sourcemap: false,
       commonjsOptions: {
         ignoreTryCatch: false,

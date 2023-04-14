@@ -1,13 +1,19 @@
 import { reactive, ref, nextTick, type Ref } from 'vue'
 import type { Pagination } from '@/api/http'
 
+interface PaginationConfig {
+	historyData?: any[];
+}
+
 interface Options {
 	success?:( )=> void
 	error?:() => void
 }
 
-export const usePagination = <T>(pageNumber:number, sizeNumber: number) => {
-	const page = ref<number>(pageNumber);
+export const usePagination = <T>(pageNumber:number, sizeNumber: number, config: PaginationConfig) => {
+	// 历史数据个数，用于重置初始化信息
+	const historyLength = config?.historyData?.length ?? 0;
+	const page = ref<number>(historyLength ? Math.round(historyLength/sizeNumber): pageNumber);
 	const size = ref<number>(sizeNumber);
 	const data = ref([]) as Ref<T[]>;
 	const loading = ref<boolean>(false);
