@@ -54,7 +54,7 @@ export default defineConfig((env)=>{
       }),
     ],
     build: {
-      target: ['model', ''], // 默认  
+      target: 'modules', // 默认  
       assetsDir: 'assets',
       assetsInlineLimit: 4096, // 4k用base64
       cssCodeSplit: true, // css 
