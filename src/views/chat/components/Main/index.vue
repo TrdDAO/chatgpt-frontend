@@ -37,7 +37,7 @@ const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom, onTop } = useScroll
 const { usingContext, toggleUsingContext } = useUsingContext()
 // 会话记录分页数据
 const historyData = chatStore.chat.has(conversationId) ? chatStore.chat.get(conversationId) : [];
-const { page, size, data, loading, noMore, resetPageData, getPageData } = usePagination<Chat.Message>(0, 40, {
+const { page, size, data, loading, noMore, resetPageData, getPageData } = usePagination<Chat.Message>(0, 20, {
   historyData,
 })
 

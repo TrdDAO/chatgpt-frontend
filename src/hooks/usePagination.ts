@@ -17,7 +17,7 @@ export const usePagination = <T>(pageNumber:number, sizeNumber: number, config: 
 	const size = ref<number>(sizeNumber);
 	const data = ref([]) as Ref<T[]>;
 	const loading = ref<boolean>(false);
-	const noMore = ref<boolean>(false);
+	const noMore = ref<boolean>(historyLength ? (historyLength%sizeNumber) ? true : false : false);
 
 	// 首页 or 下一页
 	const getPageData = (fn: () => Promise<Pagination<T>>, options?: Options) => {
