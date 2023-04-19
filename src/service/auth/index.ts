@@ -13,6 +13,15 @@ export const aythByPhone = (bodyParams: {phoneArea:string;phoneNumber:string;aut
 	})
 }
 
+export const sendPhoneCode = (bodyParams: {phoneArea:string;phoneNumber:string}) => {
+	return post<any>(`${AUTH_URL}/phone/code`,{
+		data: {
+			phoneArea: bodyParams.phoneArea,
+			phoneNumber: bodyParams.phoneNumber,
+		}
+	})
+}
+
 export const aythByEmail = (bodyParams: {emailAddress:string;authCode:string}) => {
 	return post<{
 		token: string,
@@ -21,6 +30,14 @@ export const aythByEmail = (bodyParams: {emailAddress:string;authCode:string}) =
 		data: {
 			emailAddress: bodyParams.emailAddress,
 			authCode: bodyParams.authCode,
+		}
+	})
+}
+
+export const sendEmailCode = (bodyParams: {emailAddress:string}) => {
+	return post<any>(`${AUTH_URL}/email/code`,{
+		data: {
+			emailAddress: bodyParams.emailAddress,
 		}
 	})
 }

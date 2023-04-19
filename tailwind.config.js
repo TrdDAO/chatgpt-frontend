@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'login-background': 'url(/images/2381680618248_.png)'
+        'login-background': 'url(/images/login_bg.png)'
       },
       animation: {
         blink: 'blink 1.2s infinite steps(1, start)',

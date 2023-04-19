@@ -5,7 +5,10 @@
 				ref="phoneRef"
 				:model="phoneModel"
 				:rules="{
-					phoneNumber: [{required: true, message: '请输入手机号'}],
+					phoneNumber: [
+						{key: 'phoneNumber', required: true, message: '请输入手机号'},
+						{key: 'phoneNumber', validator: phoneNumberValidator},
+					],
 					authCode: [{required: true, message: '请输入验证码'}]
 				}"
 				:show-feedback="false"
@@ -25,7 +28,7 @@
 				<NFormItem label="验证码" path="authCode">
 					<NInputGroup>
 						<NInput placeholder="请输入6位短信验证码" v-model:value="phoneModel.authCode"/>
-						<NButton @click="handleCode" style="width: 111px">{{ isCounting ? countDownString: '获取验证码'}}</NButton>
+						<NButton @click="handleSendCode('phone')" style="width: 111px">{{ isCounting ? countDownString: '获取验证码'}}</NButton>
 					</NInputGroup>
 				</NFormItem>
 				<NFormItem>
@@ -39,7 +42,10 @@
 				ref="emailRef"
 				:model="emailModel"
 				:rules="{
-					emailAddress: [{required: true,  message: '请输入邮箱'}],
+					emailAddress: [
+						{key: 'emailAddress', required: true,  message: '请输入邮箱'},
+						{key: 'emailAddress', validator: emailAddressValidator},
+					],
 					authCode: [{required: true, message: '请输入验证码'}]
 				}"
 				:show-feedback="false"
@@ -52,7 +58,7 @@
 				<NFormItem label="验证码" path="authCode">
 					<NInputGroup>
 						<NInput placeholder="请输入6位邮箱证码"  v-model:value="emailModel.authCode"/>
-						<NButton  @click="handleCode" style="width: 111px">{{isCounting ? countDownString: '获取验证码'}}</NButton>
+						<NButton  @click="handleSendCode('email')" style="width: 111px">{{isCounting ? countDownString: '获取验证码'}}</NButton>
 					</NInputGroup>
 				</NFormItem>
 				<NFormItem>
@@ -65,21 +71,23 @@
 </template>
 
 <script setup lang="ts">
-import type { FormInst } from 'naive-ui'
+import { useMessage, type FormInst, type FormItemRule } from 'naive-ui'
 import { ref, reactive } from 'vue'
 import { useAuthStore } from '@/store'
 import { useCountDown } from '@/hooks/useCountDown'
-import { aythByPhone, aythByEmail } from '@/service/auth'
+import { aythByPhone, aythByEmail, sendPhoneCode, sendEmailCode } from '@/service/auth'
 import { useRouter } from 'vue-router'
+import { t } from '@/locales';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const message = useMessage()
 const tabType = ref<string>('phone');
-const time = 60;
-const { startTimer, resetTime, isCounting, countDownString } = useCountDown(time, {
+const time = ref(60);
+const { startTimer, resetTime, isCounting, countDownString } = useCountDown(time.value, {
 	format: 's[s]',
 	afterClearCallback:() => {
-		resetTime(time);
+		resetTime(time.value);
 	}
 })
 const phoneRef = ref<FormInst|null>(null)
@@ -95,18 +103,45 @@ const emailModel = ref({
 })
 const loding = ref(false)
 
-const handleCode = () => {
-	if(isCounting) return
-	startTimer()
+const phoneNumberValidator = (rule: FormItemRule, value: string) => {
+	return /^1\d{10}$/.test(value)
+}
+
+const emailAddressValidator = (rule: FormItemRule, value: string) => {
+	return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(value)
+}
+
+const handleSendCode = async(type:string) => {
+	if(isCounting.value) return
+	const formRef = tabType.value === 'phone' ? phoneRef.value : emailRef.value;
+	const result = await formRef?.validate((errors) => {
+		if (errors) {
+			// console.error(errors)
+		}
+	},(rule) => {
+		return rule?.key === 'phoneNumber' || rule?.key === 'emailAddress'
+	});
+
+	const requestFn = tabType.value === 'phone' ? sendPhoneCode : sendEmailCode;
+	await requestFn(type === 'phone' ? {
+		phoneArea: phoneModel.value.phoneArea,
+		phoneNumber: phoneModel.value.phoneNumber} : {
+			emailAddress: emailModel.value.emailAddress
+		} as any).then(() => {
+	}).catch((e) => {
+		message.error(t('common.authCodeError'));
+		return Promise.reject(e);
+	})
+	startTimer();
 }
 const handleLogin = async() => {
 	const formRef = tabType.value === 'phone' ? phoneRef.value : emailRef.value;
 	const result = await formRef?.validate();
 	const requestFn = tabType.value === 'phone' ? aythByPhone : aythByEmail;
 	loding.value = true;
-	requestFn(tabType.value === 'phone' ? phoneModel.value : emailModel.value).then((res) => {
+	requestFn(tabType.value === 'phone' ? phoneModel.value : emailModel.value as any).then(async (res) => {
 		authStore.setToken(res.token, res.expiresTime)
-		router.replace({name: 'Root'})
+		await router.replace({name: 'Root'})
 	}).finally(() => {
 		loding.value = false;
 	})

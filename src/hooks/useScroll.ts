@@ -23,8 +23,8 @@ interface ScrollReturn {
 export function useScroll(config?: ScrollConfig): ScrollReturn {
   const scrollRef = ref<ScrollElement>(null)
   const options = Object.assign({
-    top: 200,
-    bottom: 100,
+    top: 0,
+    bottom: 0,
     topTimeout: 600,
     bottomTimeout: 600,
   }, config)

@@ -1,32 +1,42 @@
 import { ss } from '@/utils/storage'
+import userImage from '@/assets/icons/ChatGPT_logo2.svg'
 
 const LOCAL_NAME = 'userStorage'
 
+export interface Profile {
+  avatarUrl?:string|null;
+  description?:string|null;
+  gender?:string|null;
+  nickname?:string|null;
+  settings?: {
+    [key:string]: any;
+  }|null
+}
+
 export interface UserInfo {
-  avatar: string
-  name: string
-  description: string
+  userId: string;
+  username: string;
+  role: string;
+  email: string|null;
+  equities: [];
+  phone: string;
+  registrations: []; // 
 }
 
 export interface UserState {
-  userInfo: UserInfo
+  userInfo: UserInfo;
+  profile: Profile;
 }
 
-export function defaultSetting(): UserState {
+export function defaultInfo(): any {
   return {
-    userInfo: {
-      avatar: '',
-      name: 'vistor',
-      description: '',
-    },
+    username: 'vistor',
   }
 }
 
-export function getLocalState(): UserState {
-  const localSetting: UserState | undefined = ss.get(LOCAL_NAME)
-  return { ...defaultSetting(), ...localSetting }
-}
-
-export function setLocalState(setting: UserState): void {
-  ss.set(LOCAL_NAME, setting)
+export function defualtProfile():any {
+  return {
+    avatarUrl: '',
+    description: '',
+  }
 }

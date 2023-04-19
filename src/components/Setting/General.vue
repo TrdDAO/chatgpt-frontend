@@ -21,13 +21,13 @@ const ms = useMessage()
 
 const theme = computed(() => appStore.theme)
 
-const userInfo = computed(() => userStore.userInfo)
+const userInfo = computed(() => userStore.infoGetter)
+const profile = computed(() => userStore.profileGetter)
 
-const avatar = ref(userInfo.value.avatar ?? '')
-
-const name = ref(userInfo.value.name ?? '')
-
-const description = ref(userInfo.value.description ?? '')
+const name = ref(userInfo.value.username ?? '')
+const nickname = ref(profile.value.nickname ?? '')
+const avatar = ref(profile.value.avatarUrl ?? '')
+const description = ref(profile.value.description ?? '')
 
 const language = computed({
   get() {
@@ -62,15 +62,17 @@ const languageOptions: { label: string; key: Language; value: Language }[] = [
   { label: 'English', key: 'en-US', value: 'en-US' },
 ]
 
-function updateUserInfo(options: Partial<UserInfo>) {
-  userStore.updateUserInfo(options)
-  ms.success(t('common.success'))
+function updateProfile(profile:any, key:any) {
+  const data = Object.assign({}, profile, key)
+  userStore.updateProfile(data).then(() => {
+    ms.success(t('common.success'))
+  }).catch(() => {
+    ms.error(t('common.failed'))
+  })
 }
 
-function handleReset() {
-  userStore.resetUserInfo()
+function updateUserInfo(userInfo:any, key:any) {
   ms.success(t('common.success'))
-  window.location.reload()
 }
 
 function exportData(): void {
@@ -132,20 +134,29 @@ const handleLogout = () => {
   <div class="p-4 space-y-5 min-h-[200px]">
     <div class="space-y-6">
       <div class="flex items-center space-x-4">
-        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.avatarLink') }}</span>
-        <div class="flex-1">
-          <NInput v-model:value="avatar" placeholder="" />
+        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.name') }}</span>
+        <div class="w-[200px]">
+          <NInput v-model:value="name" placeholder="" disabled/>
         </div>
-        <NButton size="tiny" text type="primary" @click="updateUserInfo({ avatar })">
+        <!-- <NButton size="tiny" text type="primary" @click="updateUserInfo(userInfo, { name })">
+          {{ $t('common.save') }}
+        </NButton> -->
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.nickname') }}</span>
+        <div class="w-[200px]">
+          <NInput v-model:value="nickname" placeholder="" />
+        </div>
+        <NButton size="tiny" text type="primary" @click="updateProfile(profile, { nickname })">
           {{ $t('common.save') }}
         </NButton>
       </div>
       <div class="flex items-center space-x-4">
-        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.name') }}</span>
-        <div class="w-[200px]">
-          <NInput v-model:value="name" placeholder="" />
+        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.avatarLink') }}</span>
+        <div class="flex-1">
+          <NInput v-model:value="avatar" placeholder="" />
         </div>
-        <NButton size="tiny" text type="primary" @click="updateUserInfo({ name })">
+        <NButton size="tiny" text type="primary" @click="updateProfile(profile, { avatar })">
           {{ $t('common.save') }}
         </NButton>
       </div>
@@ -154,11 +165,11 @@ const handleLogout = () => {
         <div class="flex-1">
           <NInput v-model:value="description" placeholder="" />
         </div>
-        <NButton size="tiny" text type="primary" @click="updateUserInfo({ description })">
+        <NButton size="tiny" text type="primary" @click="updateProfile(profile, { description })">
           {{ $t('common.save') }}
         </NButton>
       </div>
-      <div
+      <!-- <div
         class="flex items-center space-x-4"
         :class="isMobile && 'items-start'"
       >
@@ -192,7 +203,7 @@ const handleLogout = () => {
             {{ $t('chat.clearHistoryConfirm') }}
           </NPopconfirm>
         </div>
-      </div>
+      </div> -->
       <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[100px]">{{ $t('setting.theme') }}</span>
         <div class="flex flex-wrap items-center gap-4">

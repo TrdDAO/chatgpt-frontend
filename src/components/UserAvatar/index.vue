@@ -7,17 +7,19 @@ import { isType } from '@/utils/isType'
 
 const userStore = useUserStore()
 
-const userInfo = computed(() => userStore.userInfo)
+userStore.getUserInfo();
+const userInfo = computed(() => userStore.infoGetter);
+const profile = computed(() => userStore.profileGetter);
 </script>
 
 <template>
   <div class="flex items-center overflow-hidden">
     <div class="w-10 h-10 overflow-hidden rounded-full shrink-0">
-      <template v-if="isType(userInfo.avatar, 'string') && userInfo.avatar.length > 0">
+      <template v-if="isType(profile.avatar, 'string') && profile.avatar.length > 0">
         <NAvatar
           size="large"
           round
-          :src="userInfo.avatar"
+          :src="profile.avatar"
           :fallback-src="defaultAvatar"
         />
       </template>
@@ -27,12 +29,12 @@ const userInfo = computed(() => userStore.userInfo)
     </div>
     <div class="flex-1 min-w-0 ml-2">
       <h2 class="overflow-hidden font-bold text-md text-ellipsis whitespace-nowrap">
-        {{ userInfo.name ?? 'ChenZhaoYu' }}
+        {{ userInfo.username ?? 'vistor' }}
       </h2>
       <p class="overflow-hidden text-xs text-gray-500 text-ellipsis whitespace-nowrap">
         <span
-          v-if="isType(userInfo.description, 'string') && userInfo.description !== ''"
-          v-html="userInfo.description"
+          v-if="isType(profile.description, 'string') && profile.description !== ''"
+          v-html="profile.description"
         />
       </p>
     </div>

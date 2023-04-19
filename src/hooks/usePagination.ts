@@ -10,7 +10,7 @@ interface Options {
 	error?:() => void
 }
 
-export const usePagination = <T>(pageNumber:number, sizeNumber: number, config: PaginationConfig) => {
+export const usePagination = <T>(pageNumber:number, sizeNumber: number, config?: PaginationConfig) => {
 	// 历史数据个数，用于重置初始化信息
 	const historyLength = config?.historyData?.length ?? 0;
 	const page = ref<number>(historyLength ? Math.round(historyLength/sizeNumber): pageNumber);

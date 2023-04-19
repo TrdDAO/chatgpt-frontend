@@ -28,6 +28,7 @@ export default {
     unauthorizedTips: '未經授權，請先進行驗證。',
     login: '登錄',
     logout: '注銷',
+    authCodeError: '獲取驗證碼失敗',
   },
   chat: {
     newChatButton: '新建對話',
@@ -59,6 +60,7 @@ export default {
     config: '設定',
     avatarLink: '頭貼連結',
     name: '名稱',
+    nickname: '昵稱',
     description: '描述',
     role: '角色設定',
     resetUserInfo: '重設使用者資訊',

@@ -28,6 +28,7 @@ export default {
     unauthorizedTips: 'Unauthorized, please verify first.',
     login: 'Login',
     logout: 'Logout',
+    authCodeError: 'Error',
   },
   chat: {
     newChatButton: 'New Chat',
@@ -60,6 +61,7 @@ export default {
     config: 'Config',
     avatarLink: 'Avatar Link',
     name: 'Name',
+    nickname: 'Nickname',
     description: 'Description',
     role: 'Role',
     resetUserInfo: 'Reset UserInfo',

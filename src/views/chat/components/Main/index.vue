@@ -33,7 +33,7 @@ const chatStore = useChatStore()
 useCopyCode()
 
 const { isMobile } = useBasicLayout()
-const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom, onTop } = useScroll()
+const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom, onTop } = useScroll({top: 200, bottom: 100});
 const { usingContext, toggleUsingContext } = useUsingContext()
 // 会话记录分页数据
 const historyData = chatStore.chat.has(conversationId) ? chatStore.chat.get(conversationId) : [];
@@ -94,11 +94,9 @@ function handleSubmit() {
   onConversation()
 }
 
-const scrollToBottomThrottle  = throttle(scrollToBottom, 600)
-
 // 发送消息
-async function onConversation() {
-  let message = prompt.value
+async function onConversation(regeneration?:Chat.Message) {
+  let message = prompt.value || regeneration?.content;
 
   if (pending.value)
     return
@@ -127,13 +125,13 @@ async function onConversation() {
   // 服务器响应时间
   const assistantTime:number|null = +new Date();
 
-  const source = postMessageWithSSE(conversationId, {content: prompt.value})
+  const source = postMessageWithSSE(conversationId, {content: message})
   source.addEventListener('message', function(e:any) {
     prompt.value = '';
     const payload = JSON.parse(e.data);
     renderData.content += payload.content;
     renderData.loading = true;
-    scrollToBottomThrottle()
+    scrollToBottomIfAtBottom();
   });
 
   source.addEventListener('load', function(e:any) {
@@ -172,9 +170,9 @@ async function onConversation() {
         data: {content: prompt.value},
         signal: controller.signal,
         onDownloadProgress: ({event}) => {
-          if(!assistantTime) {
-            assistantTime = +new Date()
-          }
+          // if(!assistantTime) {
+          //   assistantTime = +new Date()
+          // }
           prompt.value = ''
           const xhr = event.target
           const { responseText } = xhr
@@ -238,102 +236,6 @@ async function onConversation() {
     }
     return
   } finally {
-    pending.value = false
-  }
-}
-
-async function onRegenerate(index: number) {
-  if (pending.value)
-    return
-
-  controller = new AbortController()
-
-  const { requestOptions } = dataSources.value[index]
-
-  let message = requestOptions?.prompt ?? ''
-
-  let options: Chat.ConversationRequest = {}
-
-  if (requestOptions.options)
-    options = { ...requestOptions.options }
-
-  pending.value = true
-
-  try {
-    let lastText = ''
-    const fetchChatAPIOnce = async () => {
-      // await fetchChatAPIProcess<Chat.ConversationResponse>({
-      //   prompt: message,
-      //   options,
-      //   signal: controller.signal,
-      //   onDownloadProgress: ({ event }) => {
-      //     const xhr = event.target
-      //     const { responseText } = xhr
-      //     // Always process the final line
-      //     const lastIndex = responseText.lastIndexOf('\n', responseText.length - 2)
-      //     let chunk = responseText
-      //     if (lastIndex !== -1)
-      //       chunk = responseText.substring(lastIndex)
-      //     try {
-      //       const data = JSON.parse(chunk)
-      //       updateChat(
-      //         +uuid,
-      //         index,
-      //         {
-      //           dateTime: new Date().toLocaleString(),
-      //           text: lastText + data.text ?? '',
-      //           inversion: false,
-      //           error: false,
-      //           loading: false,
-      //           conversationOptions: { conversationId: data.conversationId, parentMessageId: data.id },
-      //           requestOptions: { prompt: message, ...options },
-      //         },
-      //       )
-
-      //       if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
-      //         options.parentMessageId = data.id
-      //         lastText = data.text
-      //         message = ''
-      //         return fetchChatAPIOnce()
-      //       }
-      //     }
-      //     catch (error) {
-      //       //
-      //     }
-      //   },
-      // })
-    }
-    await fetchChatAPIOnce()
-  }
-  catch (error: any) {
-    if (error.message === 'canceled') {
-      // updateChatSome(
-      //   +conversationId,
-      //   index,
-      //   {
-      //     loading: false,
-      //   },
-      // )
-      return
-    }
-
-    const errorMessage = error?.message ?? t('common.wrong')
-
-    // updateChat(
-    //   +conversationId,
-    //   index,
-    //   {
-    //     dateTime: new Date().toLocaleString(),
-    //     text: errorMessage,
-    //     inversion: false,
-    //     error: true,
-    //     loading: false,
-    //     conversationOptions: null,
-    //     requestOptions: { prompt: message, ...options },
-    //   },
-    // )
-  }
-  finally {
     pending.value = false
   }
 }
@@ -558,7 +460,7 @@ onUnmounted(() => {
                 :inversion="item.role === 'USER' ? true : false"
                 :error="item.errorInfo ? true : false"
                 :loading="item.loading"
-                @regenerate="onRegenerate(index)"
+                @regenerate="onConversation(item)"
                 @delete="handleDelete(index)"
               />
               <Message

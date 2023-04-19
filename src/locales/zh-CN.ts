@@ -28,6 +28,7 @@ export default {
     unauthorizedTips: '未经授权，请先进行验证。',
     login: '登录',
     logout: '注销',
+    authCodeError: '获取验证码失败',
   },
   chat: {
     newChatButton: '新建聊天',
@@ -60,6 +61,7 @@ export default {
     config: '配置',
     avatarLink: '头像链接',
     name: '名称',
+    nickname: '昵称',
     description: '描述',
     role: '角色设定',
     resetUserInfo: '重置用户信息',

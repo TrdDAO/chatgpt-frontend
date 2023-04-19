@@ -38,8 +38,8 @@ export const useAuthStore = defineStore('auth-store', {
   actions: {
     async getSession() {
       try {
-        const data = {usage: 0, model: 'gpt-3.5-turbo', maxTokens: null}
-        this.session = data
+        const data = {usage: 0, model: 'gpt-3.5-turbo', maxTokens: null};
+        this.session = data;
         return Promise.resolve(data)
       }
       catch (error) {

@@ -12,7 +12,7 @@ import { editConversation, deleteConversation } from '@/service/chat/index'
 
 const { isMobile } = useBasicLayout()
 
-const { page, size, data, loading, noMore, getPageData, loadMore } = usePagination<Chat.History>(0, 23);
+const { page, size, data, loading, noMore, getPageData, loadMore } = usePagination<Chat.History>(0, 20);
 
 const appStore = useAppStore();
 const chatStore = useChatStore();
