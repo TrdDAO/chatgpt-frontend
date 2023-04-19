@@ -75,6 +75,7 @@ export default {
     httpsProxy: 'HTTPS Proxy',
     balance: 'API余额',
     model: "API版本",
+    gender: '性别',
   },
   store: {
     siderButton: '提示词商店',

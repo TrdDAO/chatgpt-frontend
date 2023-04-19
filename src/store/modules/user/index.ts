@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user-store', {
       profile: {
         avatarUrl: '',
         description: '',
-        gender: '',
+        gender: null,
         nickname: '',
         settings: {},
       },

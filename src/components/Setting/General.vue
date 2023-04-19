@@ -151,6 +151,23 @@ const handleLogout = () => {
           {{ $t('common.save') }}
         </NButton>
       </div>
+      <!-- <div class="flex items-center space-x-4">
+        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.gender') }}</span>
+        <div class="w-[200px]">
+          <NInput v-model:value="nickname" placeholder="" />
+          <NRadio
+            :checked="checkedValue === 'Definitely Maybe'"
+            value="Definitely Maybe"
+            name="basic-demo"
+            @change="handleChange"
+          >
+            男
+          </NRadio>
+        </div>
+        <NButton size="tiny" text type="primary" @click="updateProfile(profile, { nickname })">
+          {{ $t('common.save') }}
+        </NButton>
+      </div> -->
       <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[100px]">{{ $t('setting.avatarLink') }}</span>
         <div class="flex-1">

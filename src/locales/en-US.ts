@@ -75,6 +75,7 @@ export default {
     httpsProxy: 'HTTPS Proxy',
     balance: 'API Balance',
     model: "Model",
+    gender: 'Gender',
   },
   store: {
     siderButton: 'Prompt Store',
