@@ -105,7 +105,7 @@ export const postConversationMessages = async(
 export const postMessageWithSSE = (
 	conversationId:string,
 	data: {content: string},
-) => {
+):any => {
 	return sse(`${CHAT_URL}/${conversationId}/messages`, {
 		data,
 		method: 'POST',

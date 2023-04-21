@@ -42,6 +42,7 @@ const { page, size, data, loading, noMore, resetPageData, getPageData } = usePag
 })
 
 const prompt = ref<string>('')
+const xhr = ref(null);
 const pending = ref<boolean>(false)
 const inputRef = ref<Ref | null>(null)
 const renderData = reactive({
@@ -56,7 +57,6 @@ const renderData = reactive({
 })
 
 const dataSources = computed(() => {
-  // console.log('computed：', scrollRef.value)
   return chatStore.getMessagesByConversationId
 })
 
@@ -84,8 +84,10 @@ onMounted(() => {
   }, {
     success: async() => {
       chatStore.addChatMessages(conversationId, data.value)
-      await nextTick()
-      scrollToBottom()
+      // await nextTick()
+      setTimeout(() => {
+        scrollToBottom()
+      }, 0)
     }
   })
 })
@@ -103,8 +105,6 @@ async function onConversation(regeneration?:Chat.Message) {
 
   if (!message || message.trim() === '')
     return
-
-  controller = new AbortController()
 
   chatStore.addChatMessages(conversationId, [{
     content: prompt.value,
@@ -124,10 +124,9 @@ async function onConversation(regeneration?:Chat.Message) {
 
   // 服务器响应时间
   const assistantTime:number|null = +new Date();
-
-  const source = postMessageWithSSE(conversationId, {content: message})
+  const source = postMessageWithSSE(conversationId, {content: message});
+  xhr.value = source;
   source.addEventListener('message', function(e:any) {
-    prompt.value = '';
     const payload = JSON.parse(e.data);
     renderData.content += payload.content;
     renderData.loading = true;
@@ -135,7 +134,6 @@ async function onConversation(regeneration?:Chat.Message) {
   });
 
   source.addEventListener('load', function(e:any) {
-    prompt.value = '';
     renderData.timeString = dayjs().format('YYYY-MM-DD HH:mm:ss');
   });
 
@@ -158,6 +156,7 @@ async function onConversation(regeneration?:Chat.Message) {
     })
   });
   source.stream();
+  prompt.value = '';
   return
   // 使用 Axios 不知道什么时候响应关闭，只能在catch里返回一个空
 
@@ -350,8 +349,8 @@ function handleEnter(event: KeyboardEvent) {
 // 取消请求
 function handleStop() {
   if (pending.value) {
-    controller.abort()
-    pending.value = false
+    xhr.value && xhr.value.close();
+    pending.value = false;
   }
 }
 
@@ -405,8 +404,9 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (pending.value)
-    controller.abort()
+  if (pending.value){
+    xhr.value && xhr.value.close();
+  }
 })
 </script>
 

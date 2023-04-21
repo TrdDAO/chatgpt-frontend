@@ -25,7 +25,7 @@ export default defineConfig((env)=>{
       
     },
     server: {
-      port: 3000,
+      port: 5000,
       https: false,
       cors: true,
       proxy: {
@@ -33,10 +33,6 @@ export default defineConfig((env)=>{
           target: viteEnv.VITE_APP_API_BASE_URL,
           changeOrigin: true,
           // rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-        '/local': {
-          target: 'http://localhost:3002',
-          changeOrigin: true,
         },
       }
     },
