@@ -34,7 +34,7 @@
 					<NInput placeholder="请输入手机号 / 邮箱 / 用户名" v-model:value="loginModel.identity"/>
 				</NFormItem>
 				<NFormItem label="密码" path="password">
-					<NInput placeholder="请输入密码" v-model:value="loginModel.password" type=""/>
+					<NInput placeholder="请输入密码" v-model:value="loginModel.password" type="password"/>
 				</NFormItem>
 				<NFormItem>
 					<NButton block type="primary" @click="handleLogin" :disabled="loding">登录</NButton>
@@ -142,9 +142,13 @@ const handleSendCode = async(type:string) => {
 const handleLogin = async() => {
 	const formRef = tabType.value === 'login' ? loginRef.value : emailRef.value;
 	const result = await formRef?.validate();
-	const requestFn = tabType.value === 'login' ? authByPsd : aythByEmail;
+	const requestFn = authByPsd;
+	// const requestFn = tabType.value === 'login' ? authByPsd : aythByEmail;
 	loding.value = true;
-	requestFn(tabType.value === 'login' ? loginModel.value : emailModel.value as any).then(async (res) => {
+	requestFn(tabType.value === 'login' ? loginModel.value : {
+		identity: emailModel.value.emailAddress,
+		password: emailModel.value.authCode
+	}).then(async (res) => {
 		authStore.setToken(res.token, res.expiresTime)
 		await router.replace({name: 'Root'})
 	}).catch(() => {

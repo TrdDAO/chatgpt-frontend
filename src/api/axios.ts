@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     const { response } = error
-    if(response.statusText === 'Unauthorized') {
+    if(response.status === 401 || response.statusText === 'Unauthorized') {
       const authStore = useAuthStoreWithout()
       authStore.removeToken()
     }
