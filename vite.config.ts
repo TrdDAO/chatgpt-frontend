@@ -28,6 +28,7 @@ export default defineConfig((env)=>{
       port: 5000,
       https: false,
       cors: true,
+      hmr: true,
       proxy: {
         '/api': {
           target: viteEnv.VITE_APP_API_BASE_URL,

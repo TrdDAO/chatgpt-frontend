@@ -1,6 +1,8 @@
 <template>
-	<NTabs size="large" :value="tabType" animated @update:value="(val:'login'|'regist') => tabType=val">
-		<NTabPane name="login" tab="登录">
+<div>
+	<!-- <NTabs size="large" :value="tabType" animated @update:value="(val:'login'|'regist') => tabType=val"> -->
+		<!-- <NTabPane name="login" tab="登录"> -->
+			<h2 class="text-3xl text-black dark:text-white text-center">{{ tabType === 'login' ? '登录' :'注册'}} </h2>
 			<NForm
 				ref="loginRef"
 				:model="loginModel"
@@ -37,11 +39,12 @@
 					<NInput placeholder="请输入密码" v-model:value="loginModel.password" type="password"/>
 				</NFormItem>
 				<NFormItem>
-					<NButton block type="primary" @click="handleLogin" :disabled="loding">登录</NButton>
+					<NButton block type="primary" @click="handleLogin" :disabled="loding" :loading="loding">登录</NButton>
 				</NFormItem>
 			</NForm>
-		</NTabPane>
-		<NTabPane name="regist" tab="邮箱注册">
+		
+		<!-- </NTabPane> -->
+		<!-- <NTabPane name="regist" tab="邮箱注册">
 			<NForm
 				ref="emailRef"
 				:model="emailModel"
@@ -69,8 +72,9 @@
 					<NButton block type="primary" @click="handleLogin" :disabled="loding">注册</NButton>
 				</NFormItem>
 			</NForm>
-		</NTabPane>
-	</NTabs>
+		</NTabPane> -->
+	<!-- </NTabs> -->
+</div>
 </template>
 
 <script setup lang="ts">
@@ -132,9 +136,9 @@ const handleSendCode = async(type:string) => {
 		type: 'Register',
 	}).then(() => {
 
-	}).catch((e) => {
-		message.error(t('common.authCodeError'));
-		return Promise.reject(e);
+	}).catch((error) => {
+		message.error(error.msg || t('common.authCodeError'));
+		return Promise.reject(error);
 	})
 	startTimer();
 }
@@ -151,8 +155,8 @@ const handleLogin = async() => {
 	}).then(async (res) => {
 		authStore.setToken(res.token, res.expiresTime)
 		await router.replace({name: 'Root'})
-	}).catch(() => {
-		message.error(t('common.wrong'));
+	}).catch((error) => {
+		message.error(error.msg || error.t('common.wrong'));
 	}).finally(() => {
 		loding.value = false;
 	})

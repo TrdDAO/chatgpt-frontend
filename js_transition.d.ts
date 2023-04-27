@@ -5,10 +5,10 @@ declare var DEBUG:any;
 
 interface Window {
   browserHistory:import('history').History<any>;
-	$loadingBar?: import('naive-ui').LoadingBarProviderInst;
-	$dialog?: import('naive-ui').DialogProviderInst;
-  $message?: import('naive-ui').MessageProviderInst;
-  $notification?: import('naive-ui').NotificationProviderInst;
+	$loadingBar: import('naive-ui').LoadingBarProviderInst;
+	$dialog: import('naive-ui').DialogProviderInst;
+  $message: import('naive-ui').MessageProviderInst;
+  $notification: import('naive-ui').NotificationProviderInst;
 }
 interface ImportMetaEnv {
   readonly VITE_GLOB_API_URL: string;

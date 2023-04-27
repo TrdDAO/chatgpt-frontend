@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type { UserInfo, UserState, Profile } from './helper';
-import { defaultInfo, defualtProfile } from './helper';
+import { defaultInfo, defualtProfile, defualtTokenUsage } from './helper';
 import { getUserInfo, getUserProfile, updateUserProfile } from '@/service/user';
 
 export const useUserStore = defineStore('user-store', {
@@ -11,16 +11,23 @@ export const useUserStore = defineStore('user-store', {
         username: '',
         role: '',
         email: '',
-        equities: [],
         phone: '',
+        equities: [],
         registrations: [],
-      },
-      profile: {
-        avatarUrl: '',
-        description: '',
-        gender: null,
-        nickname: '',
-        settings: {},
+        profile: {
+          avatarUrl: '',
+          description: '',
+          gender: null,
+          nickname: '',
+          settings: {},
+        },
+        tokenUsage: {
+          dayUsage: 0,
+          hourUsage: 0,
+          minuteUsage: 0,
+          monthUsage: 0,
+          totalUsage: 0,
+        }
       },
     }
   },
@@ -29,30 +36,20 @@ export const useUserStore = defineStore('user-store', {
       return  { ...defaultInfo(), ...state.userInfo }
     },
     profileGetter(state) {
-      return  { ...defualtProfile(), ...state.profile }
+      return  { ...defualtProfile(), ...state.userInfo.profile }
+    },
+    tokenUsageGetter(state) {
+      return  { ...defualtTokenUsage(), ...state.userInfo.tokenUsage }
     }
   },
   actions: {
     async getUserInfo() {
       const data = await getUserInfo();
-      for(let [key, value] of Object.entries(data)) {
-        if(value !== null) {
-          this.userInfo[key] = value;
-        }
-      }
-      for(let [key, value] of Object.entries(data.profile)) {
-        if(value !== null) {
-          this.profile[key] = value;
-        }
-      }
+      this.userInfo = data;
     },
 
     async updateProfile(profile: Profile) {
       const data = await updateUserProfile(profile);
-    },
-
-    resetUserInfo() {
-      this.userInfo = { ...defaultSetting().userInfo }
     },
   },
 })

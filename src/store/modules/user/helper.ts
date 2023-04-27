@@ -21,11 +21,20 @@ export interface UserInfo {
   equities: [];
   phone: string;
   registrations: []; // 
+  profile: Profile;
+  tokenUsage: TokenUsage;
+}
+
+export interface TokenUsage {
+  dayUsage: number;
+  hourUsage: number;
+  minuteUsage: number;
+  monthUsage: number;
+  totalUsage: number;
 }
 
 export interface UserState {
   userInfo: UserInfo;
-  profile: Profile;
 }
 
 export function defaultInfo(): any {
@@ -38,5 +47,15 @@ export function defualtProfile():any {
   return {
     avatarUrl: '',
     description: '',
+  }
+}
+
+export function defualtTokenUsage():any {
+  return {
+    dayUsage: 0,
+    hourUsage: 0,
+    minuteUsage: 0,
+    monthUsage: 0,
+    totalUsage: 0,
   }
 }

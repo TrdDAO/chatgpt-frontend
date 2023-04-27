@@ -31,12 +31,13 @@ axiosInstance.interceptors.response.use(
     throw new Error(response.status.toString())
   },
   (error) => {
+    console.log(error)
     const { response } = error
-    if(response.status === 401 || response.statusText === 'Unauthorized') {
-      const authStore = useAuthStoreWithout()
-      authStore.removeToken()
+    if(response && response.status === 401 || response.statusText === 'Unauthorized') {
+      const authStore = useAuthStoreWithout();
+      authStore.removeToken();
     }
-    return Promise.reject(error)
+    return Promise.reject(response.data ? response.data : error)
   },
 )
 

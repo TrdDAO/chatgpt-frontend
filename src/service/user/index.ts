@@ -1,22 +1,8 @@
 import { USER_URL, post, get, put } from '@/api/index';
+import { UserInfo } from '@/store/modules/user/helper'
 
 export const getUserInfo = () => {
-	return get<{
-		email: string|null;
-		equities: [];
-		phone: string;
-		profile: {
-			avatarUrl:string|null;
-			description:string|null;
-			gender:string|null;
-			nickname:string|null;
-			settings:string|null;
-		},
-		registrations: [];
-		role: string;
-		userId: string;
-		username: string;
-	}>(`${USER_URL}/info`, {})
+	return get<UserInfo>(`${USER_URL}/info`, {})
 }
 
 export const getUserProfile = (bodyParams: {phoneArea:string;phoneNumber:string;authCode:string}) => {

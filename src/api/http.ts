@@ -70,7 +70,8 @@ function http<T = any>(
 
   const failHandler = (error: Response<Error>) => {
     afterRequest?.()
-    throw new Error(error?.message || 'Error')
+    return Promise.reject(error)
+    //throw new Error(error?.message || 'Error')
   }
 
   beforeRequest?.()
