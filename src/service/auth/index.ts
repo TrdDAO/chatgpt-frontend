@@ -1,5 +1,14 @@
 import { AUTH_URL, post } from '@/api/index';
 
+export const authByPsd = (bodyParams:{identity:string, password:string}) => {
+	return post<{
+		token: string,
+		expiresTime: number,
+	}>(`${AUTH_URL}/password`,{
+		data: bodyParams
+	})
+}
+
 export const aythByPhone = (bodyParams: {phoneArea:string;phoneNumber:string;authCode:string}) => {
 	return post<{
 		token: string,
@@ -34,10 +43,8 @@ export const aythByEmail = (bodyParams: {emailAddress:string;authCode:string}) =
 	})
 }
 
-export const sendEmailCode = (bodyParams: {emailAddress:string}) => {
+export const sendEmailCode = (bodyParams: {emailAddress:string, type: 'Register'}) => {
 	return post<any>(`${AUTH_URL}/email/code`,{
-		data: {
-			emailAddress: bodyParams.emailAddress,
-		}
+		data: bodyParams
 	})
 }

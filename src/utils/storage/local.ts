@@ -65,6 +65,11 @@ export function createLocalStorage(options?: { expire?: number | null; crypto?: 
   }
 }
 
+// 一周有效期
 export const ls = createLocalStorage()
 
-export const ss = createLocalStorage({ expire: null, crypto: import.meta.env.DEV ? false : true })
+// 加密存储
+export const ss = createLocalStorage({ expire: null, crypto: true })
+
+// 无加密普通存储
+export const cs = createLocalStorage({ expire: null, crypto: false })

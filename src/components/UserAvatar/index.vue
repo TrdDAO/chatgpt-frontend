@@ -15,11 +15,11 @@ const profile = computed(() => userStore.profileGetter);
 <template>
   <div class="flex items-center overflow-hidden">
     <div class="w-10 h-10 overflow-hidden rounded-full shrink-0">
-      <template v-if="isType(profile.avatar, 'string') && profile.avatar.length > 0">
+      <template v-if="isType(profile.avatarUrl, 'string')">
         <NAvatar
           size="large"
           round
-          :src="profile.avatar"
+          :src="profile.avatarUrl"
           :fallback-src="defaultAvatar"
         />
       </template>

@@ -5,7 +5,9 @@ import { NTooltip } from 'naive-ui'
 import Button from './Button.vue'
 
 interface Props {
-  tooltip?: string
+  style?:Object,
+  trigger?:'hover' | 'click' | 'focus' | 'manual',
+  tooltip?: string|boolean
   placement?: PopoverPlacement
 }
 
@@ -14,13 +16,16 @@ interface Emit {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  trigger: 'hover',
   tooltip: '',
   placement: 'bottom',
 })
 
 const emit = defineEmits<Emit>()
 
-const showTooltip = computed(() => Boolean(props.tooltip))
+const showTooltip = computed(() => {
+  return Boolean(props.tooltip)
+})
 
 function handleClick() {
   emit('click')
@@ -29,13 +34,13 @@ function handleClick() {
 
 <template>
   <div v-if="showTooltip">
-    <NTooltip :placement="placement" trigger="hover">
+    <NTooltip :placement="placement" :trigger="trigger" :style="style">
       <template #trigger>
         <Button @click="handleClick">
           <slot />
         </Button>
       </template>
-      {{ tooltip }}
+      <slot name="tooltip">{{ tooltip }}</slot>
     </NTooltip>
   </div>
   <div v-else>

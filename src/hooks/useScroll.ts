@@ -65,7 +65,7 @@ export function useScroll(config?: ScrollConfig): ScrollReturn {
 
   // 达顶触发
   const onTop = (fn:()=>void) => {
-    return throttle((e:Event) => {
+    return throttle((e:UIEvent) => {
       if (scrollRef.value) {
         const threshold = options.top;
         const distanceToTop = scrollRef.value.scrollTop;

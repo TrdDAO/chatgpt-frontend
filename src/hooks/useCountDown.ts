@@ -11,12 +11,14 @@ interface Options {
 	format?:string;
 	beforeClearCallback?:Function;
 	afterClearCallback?:Function;
+	onCounting?:Function;
 }
 
 export const useCountDown = (time:number = 0, {
 	format,
 	beforeClearCallback,
-	afterClearCallback
+	afterClearCallback,
+	onCounting,
 }: Options) => {
 	const countDownTime = ref<number>(time)
 	const isCounting = ref<boolean>(false)
@@ -38,6 +40,7 @@ export const useCountDown = (time:number = 0, {
 			}
 			time = time - 1;
 			countDownTime.value = time
+			onCounting && onCounting(time);
 		}, 1000)
 	}
 

@@ -42,10 +42,7 @@ export const updateUserProfile = (
 		theme?: string,
 	}
 ) => {
-	return put<{
-		token: string,
-		expiresTime: number,
-	}>(`${USER_URL}/profile`,{
+	return put<any>(`${USER_URL}/profile`,{
 		data: bodyParams
 	})
 }

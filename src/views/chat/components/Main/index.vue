@@ -13,11 +13,11 @@ import { useUsingContext } from '../../hooks/useUsingContext'
 import HeaderComponent from '../Header/index.vue'
 import { HoverButton, SvgIcon } from '@/components'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
-import { useChatStore, usePromptStore } from '@/store'
-import { getConversationMessages, postConversationMessages, postMessageWithSSE } from '@/service/chat'
-import { usePagination } from '@/hooks/usePagination'
-import { throttle } from '@/utils/functions/throttle'
-import { t } from '@/locales'
+import { useChatStore, usePromptStore, useAuthStore } from '@/store'
+import { getConversationMessages, postConversationMessages, postMessageWithSSE, newConversation } from '@/service/chat'
+import { usePagination } from '@/hooks/usePagination';
+import { throttle } from '@/utils/functions/throttle';
+import { t } from '@/locales';
 
 let controller = new AbortController()
 
@@ -29,6 +29,7 @@ const ms = useMessage()
 const { conversationId } = route.params as { conversationId: string }
 
 const chatStore = useChatStore()
+const authStore = useAuthStore();
 
 useCopyCode()
 
@@ -42,7 +43,7 @@ const { page, size, data, loading, noMore, resetPageData, getPageData } = usePag
 })
 
 const prompt = ref<string>('')
-const xhr = ref(null);
+const xhr = ref<any>(null);
 const pending = ref<boolean>(false)
 const inputRef = ref<Ref | null>(null)
 const renderData = reactive({
@@ -106,6 +107,19 @@ async function onConversation(regeneration?:Chat.Message) {
   if (!message || message.trim() === '')
     return
 
+  // if(!conversationId) {
+  //   await newConversation({
+  //     name: 'New Chat',
+  //     model: 'GPT3_5',
+  //     temperature: 0.7,
+  //     topP: 1,
+  //     maxTokens: authStore.maxTokens
+  //   }).then((res) => {
+  //     chatStore.addHistory(res)
+  //   }).finally(() => {
+  //     loading.value = false;
+  //   })
+  // }
   chatStore.addChatMessages(conversationId, [{
     content: prompt.value,
     errorInfo: null,
@@ -360,13 +374,12 @@ function handleStop() {
 const searchOptions = computed(() => {
   if (prompt.value.startsWith('/')) {
     return promptTemplate.value.filter((item: { key: string }) => item.key.toLowerCase().includes(prompt.value.substring(1).toLowerCase())).map((obj: { value: any }) => {
-      return {
-        label: obj.value,
-        value: obj.value,
-      }
-    })
-  }
-  else {
+        return {
+          label: obj.value,
+          value: obj.value,
+        }
+      })
+  } else {
     return []
   }
 })

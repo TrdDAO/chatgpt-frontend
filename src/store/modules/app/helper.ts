@@ -1,4 +1,4 @@
-import { ss } from '@/utils/storage'
+import { cs } from '@/utils/storage'
 
 const LOCAL_NAME = 'appSetting'
 
@@ -13,14 +13,14 @@ export interface AppState {
 }
 
 export function defaultSetting(): AppState {
-  return { siderCollapsed: false, theme: 'light', language: 'zh-CN' }
+  return { siderCollapsed: false, theme: 'dark', language: 'zh-CN' }
 }
 
 export function getLocalSetting(): AppState {
-  const localSetting: AppState | undefined = ss.get(LOCAL_NAME)
+  const localSetting: AppState | undefined = cs.get(LOCAL_NAME)
   return { ...defaultSetting(), ...localSetting }
 }
 
 export function setLocalSetting(setting: AppState): void {
-  ss.set(LOCAL_NAME, setting)
+  cs.set(LOCAL_NAME, setting)
 }

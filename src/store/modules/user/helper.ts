@@ -1,4 +1,4 @@
-import { ss } from '@/utils/storage'
+import { cs } from '@/utils/storage'
 import userImage from '@/assets/icons/ChatGPT_logo2.svg'
 
 const LOCAL_NAME = 'userStorage'

@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { setupAssets, setupScrollbarStyle, setupWatchError, setUpParticles } from './plugins'
+import { setupAssets, setupScrollbarStyle, setupWatchError, setUpParticles, setupLazy } from './plugins'
 import { setupStore } from './store'
 import { setupRouter } from './router'
 import { setupI18n } from './locales'
@@ -22,6 +22,9 @@ async function bootstrap() {
 
 	setupI18n(app)
 
-	app.mount('#app')
+	setupLazy(app);
+
+	app.mount('#app');
 }
-bootstrap()
+
+bootstrap();

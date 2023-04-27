@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full bg-login-background">
+	<div class="h-full">
 		<div :class=getMobileNameClass>{{appName}}</div>
 		<div :class="getMobileContainer">
 			<Login/>
@@ -30,7 +30,7 @@ const getMobileNameClass = computed(() => {
 })
 
 const getMobileContainer = computed(() => {
-	const common = ['fixed','top-1/2', 'left-1/2', 'p-10', 'border', 'shadow-xl', 'rounded', '-translate-x-1/2', '-translate-y-1/2', 'bg-white', 'min-w-[300px]', 'dark:border-transparent','dark:bg-[#24272e]']
+	const common = ['fixed','top-1/2', 'left-1/2', 'p-8', 'border', 'shadow-xl', 'rounded', '-translate-x-1/2', '-translate-y-1/2', 'bg-white', 'min-w-[300px]', 'dark:border-transparent','dark:bg-[#24272e]']
 	if (isMobile.value)
 		return [...common, 'w-full']
 	return [...common, 'w-2/12']

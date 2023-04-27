@@ -37,6 +37,7 @@ specifiers:
   vue-i18n: ^9.2.2
   vue-router: ^4.1.6
   vue-tsc: ^1.2.0
+  vue3-lazy: 1.0.0-alpha.1
 
 dependencies:
   '@iconify/vue': 4.1.1_vue@3.2.47
@@ -56,6 +57,7 @@ dependencies:
   vue: 3.2.47
   vue-i18n: 9.2.2_vue@3.2.47
   vue-router: 4.1.6_vue@3.2.47
+  vue3-lazy: 1.0.0-alpha.1_vue@3.2.47
 
 devDependencies:
   '@types/markdown-it': 12.2.3
@@ -3425,6 +3427,15 @@ packages:
       '@vue/runtime-dom': 3.2.47
       '@vue/server-renderer': 3.2.47_vue@3.2.47
       '@vue/shared': 3.2.47
+
+  /vue3-lazy/1.0.0-alpha.1_vue@3.2.47:
+    resolution: {integrity: sha512-dpjpKK4DC5q+wZVtS/VY3X6pYBJHxRmYanr20s39RB6o6fvbneQ/DNuz37bipYfEdrEvbSZ95Y2SCexuznQNrQ==}
+    engines: {node: '>=6.0.0'}
+    peerDependencies:
+      vue: ^3.0.0-alpha.9
+    dependencies:
+      vue: 3.2.47
+    dev: false
 
   /vueuc/0.4.51_vue@3.2.47:
     resolution: {integrity: sha512-pLiMChM4f+W8czlIClGvGBYo656lc2Y0/mXFSCydcSmnCR1izlKPGMgiYBGjbY9FDkFG8a2HEVz7t0DNzBWbDw==}
