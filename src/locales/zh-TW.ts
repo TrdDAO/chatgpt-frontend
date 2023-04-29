@@ -29,6 +29,8 @@ export default {
     login: '登錄',
     logout: '注銷',
     authCodeError: '獲取驗證碼失敗',
+    dayUsage: '每日用量',
+    monthUsage: '每日用量',
   },
   chat: {
     newChatButton: '新建對話',

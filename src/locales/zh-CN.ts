@@ -76,6 +76,8 @@ export default {
     balance: 'API余额',
     model: "API版本",
     gender: '性别',
+    dayUsage: '每日用量',
+    monthUsage: '每月用量',
   },
   store: {
     siderButton: '提示词商店',

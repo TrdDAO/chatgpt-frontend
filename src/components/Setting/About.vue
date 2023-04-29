@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { NSpin, NProgress } from 'naive-ui'
 // import { fetchChatConfig } from '@/api'
 import pkg from '@/../package.json'
-import { useAuthStore } from '@/store'
+import { useAuthStore, useUserStore } from '@/store';
 
 interface ConfigState {
   timeoutMs?: number
@@ -13,6 +13,15 @@ interface ConfigState {
   httpsProxy?: string
   balance?: string
 }
+const userStore = useUserStore();
+
+const tokenUsage = computed(() => {
+  return userStore.tokenUsageGetter
+});
+
+const equities = computed(() => {
+  return userStore.availableEquities
+});
 
 const authStore = useAuthStore()
 
@@ -20,7 +29,7 @@ const loading = ref(false)
 
 const config = ref<ConfigState>()
 
-const model = computed(() => authStore.apiModel)
+const model = computed(() => equities.value.map(item => item['limitation.chatModels']).join('、'))
 
 const isChatGPTAPI = computed<boolean>(() => !!authStore.isChatGPTAPI)
 
@@ -48,18 +57,32 @@ onMounted(() => {
         Version - {{ pkg.version }}
       </h2>
       <p>{{ $t("setting.model") }}：{{ model ?? '-' }}</p>
-      <div class="flex">
-        <span class="whitespace-nowrap">{{ $t("setting.balance") }}：</span>
-        <NProgress
-          type="line"
-          status="success"
-          :show-indicator="false"
-          :percentage="0"
-          :height="24"
-          :border-radius="4"
-        >
-          <span>0 / 无限量</span>
-        </NProgress>
+      <div v-for="item in equities">
+        <p class="whitespace-nowrap">{{ item.equityName }}</p>
+        <div class="flex" v-if="item['limitation.maxTokensPerDay']">
+          <span class="whitespace-nowrap">{{ $t("setting.dayUsage") }}：</span>
+          <NProgress
+            type="line"
+            status="success"
+            :percentage="Number(((tokenUsage.dayUsage * 100)/(item['limitation.maxTokensPerDay'])).toFixed(2))"
+            :height="24"
+            :border-radius="4"
+          >
+            {{ tokenUsage.dayUsage }} / {{item['limitation.maxTokensPerDay']}}
+          </NProgress>
+        </div>
+        <div class="flex" v-if="item['limitation.maxTokensPerMonth']">
+          <span class="whitespace-nowrap">{{ $t("setting.monthUsage") }}：</span>
+          <NProgress
+            type="line"
+            status="success"
+            :percentage="Number(((tokenUsage.monthUsage * 100)/(item['limitation.maxTokensPerMonth'])).toFixed(2))"
+            :height="24"
+            :border-radius="4"
+          >
+            {{ tokenUsage.monthUsage }} / {{item['limitation.maxTokensPerMonth']}}
+          </NProgress>
+        </div>
       </div>
       <p v-if="!isChatGPTAPI">
         {{ $t("setting.reverseProxy") }}：{{ config?.reverseProxy ?? '-' }}

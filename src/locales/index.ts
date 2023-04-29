@@ -1,14 +1,14 @@
-import type { App } from 'vue'
-import type { Language } from '@/store/modules/app/helper'
-import { useAppStoreWithOut, useAppStore } from '@/store/modules/app'
-import { createI18n } from 'vue-i18n'
-import enUS from './en-US'
-import zhCN from './zh-CN'
-import zhTW from './zh-TW'
+import type { App } from 'vue';
+import type { Language } from '@/store/modules/app/helper';
+import { useAppStoreWithOut, useAppStore } from '@/store/modules/app';
+import { createI18n } from 'vue-i18n';
+import enUS from './en-US';
+import zhCN from './zh-CN';
+import zhTW from './zh-TW';
 
-const appStore = useAppStoreWithOut()
+const appStore = useAppStoreWithOut();
 
-const defaultLocale = appStore.language || 'zh-CN'
+const defaultLocale = appStore.language || 'zh-CN';
 
 const i18n = createI18n({
   locale: defaultLocale,
@@ -19,14 +19,14 @@ const i18n = createI18n({
     'zh-CN': zhCN,
     'zh-TW': zhTW,
   },
-})
+});
 
-export const t = i18n.global.t
+export const t = i18n.global.t;
 
 export function setLocale(locale: Language) {
-  i18n.global.locale = locale
+  i18n.global.locale = locale;
 }
 
 export function setupI18n(app: App) {
-  app.use(i18n)
+  app.use(i18n);
 }

@@ -52,6 +52,12 @@ export const useChatStore = defineStore('chat-store', {
       return await this.reloadRoute(history.conversationId)
     },
 
+    // 新建聊天并且不使用路由
+    async addHistoryWithoutRoute(history: Chat.History) {
+      this.history.unshift(history)
+      this.active = history.conversationId
+    },
+
     updateHistory(conversationId: string, key: Partial<Chat.History>) {
       const index = this.history.findIndex((item) => item.conversationId === conversationId);
       if(index !== -1) {
@@ -92,8 +98,7 @@ export const useChatStore = defineStore('chat-store', {
     },
 
     setUsingContext(context: boolean) {
-      this.usingContext = context
-      // this.recordState()
+      this.usingContext = context;
     },
 
     // updateHistory(conversationId: string, edit: Partial<Chat.History>) {

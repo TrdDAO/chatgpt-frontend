@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { pinia } from '@/store'
 import type { AppState, Language, Theme } from './helper'
 import { getLocalSetting, setLocalSetting } from './helper'
@@ -31,4 +31,8 @@ export const useAppStore = defineStore('app-store', {
 
 export function useAppStoreWithOut() {
   return useAppStore(pinia)
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useAppStore as any, import.meta.hot))
 }

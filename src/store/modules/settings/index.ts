@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import type { SettingsState } from './helper'
 import { defaultSetting, getLocalState, removeLocalState, setLocalState } from './helper'
 
@@ -20,3 +20,8 @@ export const useSettingStore = defineStore('setting-store', {
     },
   },
 })
+
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSettingStore as any, import.meta.hot))
+}

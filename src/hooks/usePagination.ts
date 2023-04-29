@@ -27,10 +27,10 @@ export const usePagination = <T>(pageNumber:number, sizeNumber: number, config?:
 			page.value +=1
 			data.value = res.content
 			noMore.value = res.content.length < sizeNumber ? true : false
-			options && options.success && options?.success()
+			options?.success?.();
 		}).catch((e:Error) => {
 			console.error(e)
-			options && options.error && options.error()
+			options?.error?.();
 		}).finally(() => {
 			loading.value = false
 		})
@@ -59,10 +59,10 @@ export const usePagination = <T>(pageNumber:number, sizeNumber: number, config?:
 			page.value +=1
 			data.value = res.content
 			noMore.value = res.content.length < sizeNumber ? true : false
-			options && options.success && options.success()
+			options?.success?.();
 		}).catch((e:Error) => {
 			console.log(e)
-			options && options.error && options.error()
+			options?.error?.();
 		}).finally(() => {
 			loading.value = false
 		})
@@ -73,13 +73,13 @@ export const usePagination = <T>(pageNumber:number, sizeNumber: number, config?:
 		if(noMore.value || loading.value) return
 		loading.value = true
 		fn().then((res) => {
-			page.value +=1
-			data.value = [...data.value, ...res.content]
-			noMore.value = res.content.length < sizeNumber ? true : false
-			options && options.success && options.success()
+			page.value +=1;
+			data.value = [...data.value, ...res.content];
+			noMore.value = res.content.length < sizeNumber ? true : false;
+			options?.success?.();
 		}).catch((e:Error) => {
 			console.log(e)
-			options && options.error && options.error()
+			options?.error?.();
 		}).finally(() => {
 			loading.value = false
 		})

@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { NButton, NLayoutSider } from 'naive-ui'
 import List from './List.vue'
 import Footer from './Footer.vue'
-import { useAppStore, useChatStore, useAuthStore } from '@/store'
+import { useAppStore, useChatStore, useAuthStore, useUserStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { PromptStore } from '@/components'
 import { newConversation } from '@/service/chat'
@@ -12,12 +12,24 @@ import { newConversation } from '@/service/chat'
 const appStore = useAppStore()
 const chatStore = useChatStore()
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const { isMobile } = useBasicLayout();
 const show = ref(false);
 const loading = ref(false);
 
 const collapsed = computed(() => appStore.siderCollapsed)
+const equities = computed(() => {
+  return userStore.availableEquities
+});
+
+const maxTokensPerRequest = computed(() => {
+  const maxTokens = equities.value.map((item) => {
+    return item.limitation.maxTokensPerRequest
+  }) as number[]
+  return Math.max(...maxTokens)
+})
+
 
 // 新建聊天
 function handleAdd() {
@@ -27,7 +39,7 @@ function handleAdd() {
     model: 'GPT3_5',
     temperature: 0.7,
     topP: 1,
-    maxTokens: authStore.maxTokens
+    maxTokens: maxTokensPerRequest.value
   }).then((res) => {
     chatStore.addHistory(res)
   }).finally(() => {

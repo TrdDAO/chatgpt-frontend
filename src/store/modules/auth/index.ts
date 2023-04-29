@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { pinia } from '@/store'
 import { getToken, removeToken, setToken } from './helper'
 
@@ -62,4 +62,8 @@ export const useAuthStore = defineStore('auth-store', {
 
 export function useAuthStoreWithout() {
   return useAuthStore(pinia)
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useAuthStore as any, import.meta.hot))
 }

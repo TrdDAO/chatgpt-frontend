@@ -1,7 +1,7 @@
 import {defineComponent, h, type App } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStoreWithout } from '@/store'
+import { useAuthStoreWithout, useAppStoreWithOut } from '@/store'
 import ChatLayout from '@/views/chat/index.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -48,8 +48,8 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-	const authStore = useAuthStoreWithout()
-	
+	const authStore = useAuthStoreWithout();
+	const appStore = useAppStoreWithOut();
 	// if (!authStore.session) {
 	// 	try {
 	// 		const data = await authStore.getSession()

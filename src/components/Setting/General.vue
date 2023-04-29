@@ -66,8 +66,6 @@ function updateProfile(profile:any, key:any) {
   const data = Object.assign({}, profile, key)
   userStore.updateProfile(data).then(() => {
     ms.success(t('common.success'))
-  }).catch(() => {
-    ms.error(t('common.failed'))
   })
 }
 

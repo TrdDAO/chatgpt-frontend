@@ -137,7 +137,6 @@ const handleSendCode = async(type:string) => {
 	}).then(() => {
 
 	}).catch((error) => {
-		message.error(error.msg || t('common.authCodeError'));
 		return Promise.reject(error);
 	})
 	startTimer();
@@ -155,8 +154,6 @@ const handleLogin = async() => {
 	}).then(async (res) => {
 		authStore.setToken(res.token, res.expiresTime)
 		await router.replace({name: 'Root'})
-	}).catch((error) => {
-		message.error(error.msg || error.t('common.wrong'));
 	}).finally(() => {
 		loding.value = false;
 	})

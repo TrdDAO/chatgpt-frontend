@@ -76,6 +76,8 @@ export default {
     balance: 'API Balance',
     model: "Model",
     gender: 'Gender',
+    dayUsage: 'DayUsage',
+    monthUsage: 'MonthUsage',
   },
   store: {
     siderButton: 'Prompt Store',

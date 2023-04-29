@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import type { UserInfo, UserState, Profile } from './helper';
 import { defaultInfo, defualtProfile, defualtTokenUsage } from './helper';
 import { getUserInfo, getUserProfile, updateUserProfile } from '@/service/user';
@@ -40,6 +40,16 @@ export const useUserStore = defineStore('user-store', {
     },
     tokenUsageGetter(state) {
       return  { ...defualtTokenUsage(), ...state.userInfo.tokenUsage }
+    },
+    availableEquities(state){
+      return  state.userInfo.equities.filter((item:any) => {
+        return item.status === 'AVAILABLE';
+      }).map((item:any) => {
+        for(let [key, value] of Object.entries(item.limitation)) {
+          item['limitation.'+key] = value;
+        }
+        return item
+      })
     }
   },
   actions: {
@@ -53,3 +63,7 @@ export const useUserStore = defineStore('user-store', {
     },
   },
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useUserStore as any, import.meta.hot))
+}

@@ -40,9 +40,12 @@ export interface Pagination<T> {
 }
 
 export interface Response<T = any> {
-  data: T
-  message: string | null
-  code: string
+  data: T;
+  msg: string | null;
+  code: string;
+  path: string;
+  requestId: string;
+  timestamp: string;
 }
 
 function http<T = any>(
@@ -68,8 +71,10 @@ function http<T = any>(
     return Promise.reject(res.data)
   }
 
+  // 失败error拦截
   const failHandler = (error: Response<Error>) => {
     afterRequest?.()
+    window.$message.error(error.msg || '请求失败')
     return Promise.reject(error)
     //throw new Error(error?.message || 'Error')
   }

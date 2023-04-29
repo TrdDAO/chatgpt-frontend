@@ -13,7 +13,7 @@ import { useUsingContext } from '../../hooks/useUsingContext'
 import HeaderComponent from '../Header/index.vue'
 import { HoverButton, SvgIcon } from '@/components'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
-import { useChatStore, usePromptStore, useAuthStore } from '@/store'
+import { useChatStore, usePromptStore, useAuthStore, useUserStore } from '@/store'
 import { getConversationMessages, postConversationMessages, postMessageWithSSE, newConversation } from '@/service/chat'
 import { usePagination } from '@/hooks/usePagination';
 import { throttle } from '@/utils/functions/throttle';
@@ -26,10 +26,11 @@ const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 const route = useRoute()
 const dialog = useDialog()
 const ms = useMessage()
-const { conversationId } = route.params as { conversationId: string }
+let { conversationId } = route.params as { conversationId: string }
 
-const chatStore = useChatStore()
+const chatStore = useChatStore();
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 useCopyCode()
 
@@ -61,6 +62,17 @@ const dataSources = computed(() => {
   return chatStore.getMessagesByConversationId
 })
 
+const equities = computed(() => {
+  return userStore.availableEquities
+});
+
+const maxTokensPerRequest = computed(() => {
+  const maxTokens = equities.value.map((item) => {
+    return item.limitation.maxTokensPerRequest
+  }) as number[]
+  return Math.max(...maxTokens)
+})
+
 // 添加PromptStore
 const promptStore = usePromptStore()
 
@@ -84,10 +96,10 @@ onMounted(() => {
     })
   }, {
     success: async() => {
-      chatStore.addChatMessages(conversationId, data.value)
+      chatStore.addChatMessages(conversationId, data.value);
       // await nextTick()
       setTimeout(() => {
-        scrollToBottom()
+        scrollToBottom();
       }, 0)
     }
   })
@@ -107,19 +119,20 @@ async function onConversation(regeneration?:Chat.Message) {
   if (!message || message.trim() === '')
     return
 
-  // if(!conversationId) {
-  //   await newConversation({
-  //     name: 'New Chat',
-  //     model: 'GPT3_5',
-  //     temperature: 0.7,
-  //     topP: 1,
-  //     maxTokens: authStore.maxTokens
-  //   }).then((res) => {
-  //     chatStore.addHistory(res)
-  //   }).finally(() => {
-  //     loading.value = false;
-  //   })
-  // }
+  if(!conversationId) {
+    conversationId = await newConversation({
+      name: 'New Chat',
+      model: 'GPT3_5',
+      temperature: 0.7,
+      topP: 1,
+      maxTokens: maxTokensPerRequest.value
+    }).then((res) => {
+      chatStore.addHistoryWithoutRoute(res);
+      return Promise.resolve(res.conversationId);
+    }).finally(() => {
+      loading.value = false;
+    })
+  }
   chatStore.addChatMessages(conversationId, [{
     content: prompt.value,
     errorInfo: null,
@@ -150,7 +163,10 @@ async function onConversation(regeneration?:Chat.Message) {
   source.addEventListener('load', function(e:any) {
     renderData.timeString = dayjs().format('YYYY-MM-DD HH:mm:ss');
   });
-
+  source.addEventListener('error', function(e:any) {
+    const payload = JSON.parse(e.data);
+    window.$message.error(payload.msg || '请求失败');
+  });
   source.addEventListener('close', function(e:any) {
     pending.value = false;
     chatStore.addChatMessages(conversationId, [{
@@ -221,8 +237,6 @@ async function onConversation(regeneration?:Chat.Message) {
         }
       }).then((res) => {
         console.log(res)
-      }).catch((e) =>{ 
-        console.log(e);
       })
     }
     await fetchChatAPIOnce()
@@ -444,9 +458,13 @@ onUnmounted(() => {
           :class="[isMobile ? 'p-2' : 'p-4']"
         >
           <template v-if="!conversationId">
-            <div class="flex flex-1 items-center justify-center mt-14 text-center text-neutral-300">
-              <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
-              <span>{{ $t('chat.chooseConversation') }}</span>
+            <div class="flex flex-1 items-center justify-center mt-4 text-center text-neutral-300">
+              <div class="mx-3">
+                <p>{{ $t('chat.chooseConversation') }}</p>
+                <p class="text-left mb-[10px]">注意：</p>
+                <p class="text-left mb-[10px]">1. 每次更换话题，请开启新的聊天窗口。如果上下文的话题不同，会对ChatGPT产生干扰。影响回答的准确性</p>
+                <p class="text-left mb-[10px]">2. 连续对话会加速token消耗，因为连续对话时，都需要将之前的对话内容作为输入。开启新的聊天窗口，可节省token</p>
+              </div>
             </div>
           </template>
           <template v-else>
@@ -511,10 +529,13 @@ onUnmounted(() => {
               <SvgIcon icon="ri:download-2-line" />
             </span>
           </HoverButton>
-          <!-- <HoverButton v-if="!isMobile" @click="toggleUsingContext" tooltip="携带记录">
-            <span class="text-xl" :class="{ 'text-[#4b9e5f]': usingContext, 'text-[#a8071a]': !usingContext }">
-              <SvgIcon icon="ri:chat-history-line" />
-            </span>
+          <!-- <HoverButton v-if="!isMobile" @click="toggleUsingContext" :tooltip="usingContext ? '关闭连续对话':'开启连续对话'">
+            <template v-if="usingContext">
+              <SvgIcon icon="uis:align-letter-right" style="font-size: 20px"/>
+            </template>
+            <template v-else>
+              <SvgIcon icon="uis:bars" style="font-size: 20px"/>
+            </template>
           </HoverButton> -->
           <NAutoComplete v-model:value="prompt" :options="searchOptions" :render-label="renderOption">
             <template #default="{ handleInput, handleBlur, handleFocus }">
