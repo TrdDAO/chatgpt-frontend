@@ -5,6 +5,14 @@ import { getLocalSetting, setLocalSetting } from './helper'
 
 export const useAppStore = defineStore('app-store', {
   state: (): AppState => getLocalSetting(),
+
+  getters: {
+    // 滑块10倍
+    temperatureValue(state) {
+      return state.temperature
+    }
+  },
+
   actions: {
     setSiderCollapsed(collapsed: boolean) {
       this.siderCollapsed = collapsed
@@ -20,6 +28,13 @@ export const useAppStore = defineStore('app-store', {
       if (this.language !== language) {
         this.language = language
         this.recordState()
+      }
+    },
+
+    setTemperature(temperature: number) {
+      if (this.temperature !== temperature) {
+        this.temperature = temperature;
+        this.recordState();
       }
     },
 

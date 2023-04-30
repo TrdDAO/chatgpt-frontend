@@ -13,7 +13,7 @@ import { useUsingContext } from '../../hooks/useUsingContext'
 import HeaderComponent from '../Header/index.vue'
 import { HoverButton, SvgIcon } from '@/components'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
-import { useChatStore, usePromptStore, useAuthStore, useUserStore } from '@/store'
+import { useChatStore, usePromptStore, useAuthStore, useUserStore, useAppStore } from '@/store'
 import { getConversationMessages, postConversationMessages, postMessageWithSSE, newConversation } from '@/service/chat'
 import { usePagination } from '@/hooks/usePagination';
 import { throttle } from '@/utils/functions/throttle';
@@ -31,6 +31,7 @@ let { conversationId } = route.params as { conversationId: string }
 const chatStore = useChatStore();
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const appStore = useAppStore();
 
 useCopyCode()
 
@@ -123,7 +124,7 @@ async function onConversation(regeneration?:Chat.Message) {
     conversationId = await newConversation({
       name: 'New Chat',
       model: 'GPT3_5',
-      temperature: 0.7,
+      temperature: appStore.temperatureValue,
       topP: 1,
       maxTokens: maxTokensPerRequest.value
     }).then((res) => {

@@ -32,3 +32,14 @@ export const updateUserProfile = (
 		data: bodyParams
 	})
 }
+
+export const updatePassword = (
+	bodyParams: {
+		newPassword?:string,
+		password?:string,
+	}
+) => {
+	return put<any>(`/api/open/user/password`,{
+		data: bodyParams
+	})
+}

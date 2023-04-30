@@ -37,7 +37,7 @@ function handleAdd() {
   newConversation({
     name: 'New Chat',
     model: 'GPT3_5',
-    temperature: 0.7,
+    temperature: appStore.temperatureValue,
     topP: 1,
     maxTokens: maxTokensPerRequest.value
   }).then((res) => {

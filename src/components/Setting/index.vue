@@ -1,11 +1,13 @@
 <script setup lang='ts'>
-import { computed, ref } from 'vue'
-import { NModal, NTabPane, NTabs } from 'naive-ui'
-import General from './General.vue'
-import Advanced from './Advanced.vue'
-import About from './About.vue'
-import { useAuthStore } from '@/store'
-import { SvgIcon } from '@/components'
+import { computed, ref } from 'vue';
+import { NModal, NTabPane, NTabs } from 'naive-ui';
+import General from './General.vue';
+import Advanced from './Advanced.vue';
+import About from './About.vue';
+import Account from './Account.vue';
+import Invitation from './Invitation.vue';
+import { useAuthStore } from '@/store';
+import { SvgIcon } from '@/components';
 
 interface Props {
   visible: boolean
@@ -41,7 +43,7 @@ const show = computed({
       <NTabs v-model:value="active" type="line" animated>
         <NTabPane name="General" tab="General">
           <template #tab>
-            <SvgIcon class="text-lg" icon="ri:file-user-line" />
+            <SvgIcon class="text-lg" icon="clarity:administrator-line" />
             <span class="ml-2">{{ $t('setting.general') }}</span>
           </template>
           <div class="min-h-[100px]">
@@ -59,11 +61,25 @@ const show = computed({
         </NTabPane> -->
         <NTabPane name="Config" tab="Config">
           <template #tab>
-            <SvgIcon class="text-lg" icon="ri:list-settings-line" />
-            <span class="ml-2">{{ $t('setting.config') }}</span>
+            <SvgIcon class="text-lg" icon="ri:file-user-line" />
+            <span class="ml-2">{{ $t('setting.configInfo') }}</span>
           </template>
           <About />
         </NTabPane>
+        <NTabPane name="Account" tab="Account">
+          <template #tab>
+            <SvgIcon class="text-lg" icon="ri:list-settings-line" />
+            <span class="ml-2">{{ $t('setting.account') }}</span>
+          </template>
+          <Account/>
+        </NTabPane>
+        <!-- <NTabPane name="Invitation" tab="Invitation">
+          <template #tab>
+            <SvgIcon class="text-lg" icon="ri:list-settings-line" />
+            <span class="ml-2">{{ $t('setting.invitation') }}</span>
+          </template>
+          <Invitation/>
+        </NTabPane> -->
       </NTabs>
     </div>
   </NModal>

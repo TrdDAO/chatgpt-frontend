@@ -10,10 +10,11 @@ export interface AppState {
   siderCollapsed: boolean
   theme: Theme
   language: Language
+  temperature: number
 }
 
 export function defaultSetting(): AppState {
-  return { siderCollapsed: false, theme: 'dark', language: 'zh-CN' }
+  return { siderCollapsed: false, theme: 'dark', language: 'zh-CN',temperature: 0.7 }
 }
 
 export function getLocalSetting(): AppState {
