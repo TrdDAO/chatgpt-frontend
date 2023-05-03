@@ -27,7 +27,6 @@ declare module '@vue/runtime-core' {
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
     NScrollbar: typeof import('naive-ui')['NScrollbar']
     NSlider: typeof import('naive-ui')['NSlider']
-    NSpace: typeof import('naive-ui')['NSpace']
     NSpin: typeof import('naive-ui')['NSpin']
     PromptStore: typeof import('./src/components/PromptStore/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

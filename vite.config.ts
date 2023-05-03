@@ -1,15 +1,16 @@
 import path from 'path'
-import { defineConfig, loadEnv } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from "@vitejs/plugin-vue-jsx"
-import AutoImport from 'unplugin-auto-import/vite'
+import { defineConfig, loadEnv } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import viteCompression from 'vite-plugin-compression';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 
 // https://vitejs.dev/config/
 export default defineConfig((env)=>{
   const viteEnv = loadEnv(env.mode, process.cwd());
-  
 
   return {
     root: process.cwd(),
@@ -49,6 +50,8 @@ export default defineConfig((env)=>{
           NaiveUiResolver()
         ]
       }),
+      visualizer(),
+      viteCompression(),
     ],
     build: {
       target: 'modules', // 默认  
@@ -60,6 +63,14 @@ export default defineConfig((env)=>{
       commonjsOptions: {
         ignoreTryCatch: false,
       },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            html2canvas: ['html2canvas'],
+            katex: ['katex'],
+          }
+        }
+      }
     }
   }
 })
