@@ -53,7 +53,7 @@ const updateTemperature = async() => {
 				password: [{key:'password-required', required: true, message: '请输入密码'}],
 				newPassword: [
 					{key:'newPassword-required', required: true, message: '请输入新密码'},
-					{key:'newPassword-length', min: 7, message: '新密码需大于7位'},
+					{key:'newPassword-length', min: 6, message: '新密码需大于等于6位'},
 				],
 			}"
 			ref="psdRef"
