@@ -1,22 +1,23 @@
-import { ss } from '@/utils/storage'
+import { cs } from '@/utils/storage'
 
-const LOCAL_NAME = 'chatStorage'
+const LOCAL_NAME = 'chatStorage';
+interface ChatLocal {
+  sendHistory: boolean,
+  modelVersion: 'GPT3_5' | 'GPT4',
+}
 
-export function defaultState(): Chat.ChatState {
-  const uuid = '1002'
+export function defaultState():ChatLocal {
   return {
-    active: uuid,
-    usingContext: true,
-    history: [],
-    chat: [{ uuid, data: [] }],
+    sendHistory: true,
+    modelVersion: 'GPT3_5',
   }
 }
 
-export function getLocalState(): Chat.ChatState {
-  const localState = ss.get(LOCAL_NAME)
+export function getLocalState(): ChatLocal {
+  const localState = cs.get(LOCAL_NAME)
   return { ...defaultState(), ...localState }
 }
 
-export function setLocalState(state: Chat.ChatState) {
-  ss.set(LOCAL_NAME, state)
+export function setLocalState(state: ChatLocal) {
+  cs.set(LOCAL_NAME, state)
 }

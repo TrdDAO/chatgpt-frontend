@@ -32,6 +32,7 @@ export default {
   },
   chat: {
     newChatButton: '新建聊天',
+    newGPT4ChatButton: '新建GPT4聊天',
     placeholder: '来说点什么吧...（Shift + Enter = 换行）',
     placeholderMobile: '来说点什么...',
     copy: '复制',
@@ -44,8 +45,8 @@ export default {
     exportSuccess: '保存成功',
     exportFailed: '保存失败',
     usingContext: '上下文模式',
-    turnOnContext: '当前模式下, 发送消息会携带之前的聊天记录',
-    turnOffContext: '当前模式下, 发送消息不会携带之前的聊天记录',
+    turnOnContext: '当前模式下, 发送消息会携带之前的聊天记录，Token将加速消耗',
+    turnOffContext: '当前模式下, 发送消息不会携带之前的聊天记录，节省Token消耗',
     deleteMessage: '删除消息',
     deleteMessageConfirm: '是否删除此消息?',
     deleteHistoryConfirm: '确定删除此记录?',
@@ -84,6 +85,8 @@ export default {
     gender: '性别',
     dayUsage: '每日用量',
     monthUsage: '每月用量',
+    perRequest: '单次最大',
+    expiresTime: '到期时间',
   },
   store: {
     siderButton: '提示词商店',

@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from 'axios'
 import { useAuthStore } from '@/store'
 import { useAuthStoreWithout } from '@/store/modules/auth'
 
-export const baseURL = import.meta.env.DEV ? 'https://chat.miraclekang.com': location.origin;
+export const baseURL = import.meta.env.DEV ? import.meta.env.VITE_APP_API_DEV_URL: location.origin;
 
 export const axiosInstance = axios.create({
   baseURL,

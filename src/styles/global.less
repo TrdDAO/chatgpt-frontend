@@ -8,3 +8,19 @@ body {
 	padding-bottom: constant(safe-area-inset-bottom);
 	padding-bottom: env(safe-area-inset-bottom);
 }
+.bg-conversation-plus::before {
+	content: '4';
+  position: absolute;
+  top: 0;
+  right: -12px;
+	width: 40px;
+	height: 16px;
+	list-style: 12px;
+	font-size: 12px;
+	line-height: 16px;
+	text-align: center;
+	color: #fff; //#24272e
+	background-color: #4b9e5f;
+	z-index: 1;
+	transform: rotate(45deg);
+}

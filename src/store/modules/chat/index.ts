@@ -5,12 +5,11 @@ import { router } from '@/router'
 
 export const useChatStore = defineStore('chat-store', {
   state: (): Chat.ChatState => {
-    return {
+    return Object.assign(getLocalState(), {
       active: '',
-      usingContext: true, // 携带上下文
       history: [], // 会话列表
       chat: new Map(),
-    }
+    })
   },
 
   getters: {
@@ -73,6 +72,10 @@ export const useChatStore = defineStore('chat-store', {
         console.log(this.history);
       }
     },
+
+    getHistory(conversationId: string):Chat.History|null {
+      return this.history.find(item => item.conversationId === conversationId)?? null
+    },
     
     // 往后加
     addChatMessages(conversationId: string, chats: Chat.Message[]) {
@@ -97,8 +100,13 @@ export const useChatStore = defineStore('chat-store', {
       
     },
 
+    // 是否携带历史会话
     setUsingContext(context: boolean) {
-      this.usingContext = context;
+      setLocalState({
+        sendHistory: context,
+        modelVersion: this.modelVersion,
+      })
+      this.sendHistory = context;
     },
 
     // updateHistory(conversationId: string, edit: Partial<Chat.History>) {

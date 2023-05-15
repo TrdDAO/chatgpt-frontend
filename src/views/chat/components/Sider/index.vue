@@ -17,33 +17,38 @@ const userStore = useUserStore();
 const { isMobile } = useBasicLayout();
 const show = ref(false);
 const loading = ref(false);
+const plusLoading = ref(false);
 
 const collapsed = computed(() => appStore.siderCollapsed)
-const equities = computed(() => {
-  return userStore.availableEquities
-});
-
-const maxTokensPerRequest = computed(() => {
-  const maxTokens = equities.value.map((item) => {
-    return item.limitation.maxTokensPerRequest
-  }) as number[]
-  return Math.max(...maxTokens)
+const usingContext = computed<boolean>(() => chatStore.sendHistory);
+const isPlus = computed(() => {
+  return userStore.availableEquities.find((item) => {
+    return item.limitation.chatModels.includes('GPT4')
+  }) ? true : false
 })
 
-
 // 新建聊天
-function handleAdd() {
-  loading.value = true;
+function handleAdd(type:'GPT3_5'|'GPT4') {
+  if(type === 'GPT3_5') {
+    loading.value = true;
+  } else {
+    plusLoading.value = true;
+  }
   newConversation({
     name: 'New Chat',
-    model: 'GPT3_5',
+    model: type,
     temperature: appStore.temperatureValue,
     topP: 1,
-    maxTokens: maxTokensPerRequest.value
+    sendHistory: usingContext.value,
+    maxTokens: userStore.maxTokensPerRequest,
   }).then((res) => {
     chatStore.addHistory(res)
   }).finally(() => {
-    loading.value = false;
+    if(type === 'GPT3_5') {
+      loading.value = false;
+    } else {
+      plusLoading.value = false;
+    }
   })
   // if (isMobile.value)
   //   appStore.setSiderCollapsed(true)
@@ -99,8 +104,11 @@ watch(
     <div class="flex flex-col h-full" :style="mobileSafeArea">
       <main class="flex flex-col flex-1 min-h-0">
         <div class="p-4">
-          <NButton dashed block @click="handleAdd" :disabled="loading" :loading="loading">
+          <NButton dashed block @click="()=>handleAdd('GPT3_5')" :disabled="loading" :loading="loading" style="margin-bottom: 5px;">
             {{ $t('chat.newChatButton') }}
+          </NButton>
+          <NButton v-if="isPlus" dashed block @click="()=>handleAdd('GPT4')" :disabled="plusLoading" :loading="plusLoading">
+            {{ $t('chat.newGPT4ChatButton') }}
           </NButton>
         </div>
         <div class="flex-1 min-h-0 pb-4 overflow-hidden">

@@ -32,6 +32,7 @@ export default {
   },
   chat: {
     newChatButton: 'New Chat',
+    newGPT4ChatButton: 'New GPT4 Chat',
     placeholder: 'Ask me anything...(Shift + Enter = line break)',
     placeholderMobile: 'Ask me anything...',
     copy: 'Copy',
@@ -84,6 +85,8 @@ export default {
     gender: 'Gender',
     dayUsage: 'DayUsage',
     monthUsage: 'MonthUsage',
+    perRequest: 'PerRequest',
+    expiresTime: 'ExpiresTime',
   },
   store: {
     siderButton: 'Prompt Store',

@@ -22,7 +22,7 @@ export interface UserInfo {
   phone: string;
   registrations: []; // 
   profile: Profile;
-  tokenUsage: TokenUsage;
+  tokenUsages: TokenUsage[];
 }
 
 export interface TokenUsage {
@@ -31,6 +31,7 @@ export interface TokenUsage {
   minuteUsage: number;
   monthUsage: number;
   totalUsage: number;
+  model: 'GPT3_5'|'GPT4';
 }
 
 export interface UserState {
@@ -52,10 +53,19 @@ export function defualtProfile():any {
 
 export function defualtTokenUsage():any {
   return {
-    dayUsage: 0,
-    hourUsage: 0,
-    minuteUsage: 0,
-    monthUsage: 0,
-    totalUsage: 0,
+    'GPT3_5': {
+      dayUsage: 0,
+      hourUsage: 0,
+      minuteUsage: 0,
+      monthUsage: 0,
+      totalUsage: 0,
+    },
+    'GPT4': {
+      dayUsage: 0,
+      hourUsage: 0,
+      minuteUsage: 0,
+      monthUsage: 0,
+      totalUsage: 0,
+    }
   }
 }

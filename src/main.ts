@@ -1,6 +1,12 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { setupAssets, setupScrollbarStyle, setupWatchError, setUpParticles, setupLazy } from './plugins'
+import {
+	setupAssets,
+	setupScrollbarStyle,
+	setupWatchError,
+	setUpParticles,
+	setupLazy
+} from './plugins'
 import { setupStore } from './store'
 import { setupRouter } from './router'
 import { setupI18n } from './locales'

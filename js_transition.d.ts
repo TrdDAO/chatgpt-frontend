@@ -48,7 +48,7 @@ declare namespace Chat {
 		ownerUserId: string
 		name: string
 		originName?: string
-		model: string
+		model: 'GPT3_5'|'GPT4'
 		temperature: string
 		topP: string
 		maxTokens: string
@@ -56,7 +56,8 @@ declare namespace Chat {
 
 	interface ChatState {
 		active: string | null
-		usingContext: boolean;
+		sendHistory: boolean;
+		modelVersion: 'GPT3_5' | 'GPT4',
 		history: History[]
 		chat: Map<string, Message[]>
 	}

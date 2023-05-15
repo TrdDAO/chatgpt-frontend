@@ -2,7 +2,7 @@
 import { computed, ref, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { SvgIcon } from '@/components'
-import { useAppStore, useChatStore } from '@/store'
+import { useAppStore, useChatStore, useUserStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { debounce } from '@/utils/functions/debounce'
 import { throttle } from '@/utils/functions/throttle'
@@ -16,10 +16,11 @@ const { page, size, data, loading, noMore, getPageData, loadMore } = usePaginati
 
 const appStore = useAppStore();
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const route = useRoute();
 
 const { conversationId } = route.params as { conversationId: string }
-
+const usingContext = computed<boolean>(() => chatStore.sendHistory);
 const scrollContainerRef = ref<HTMLDivElement|null>(null)
 
 const dataSources = computed(() => {
@@ -54,7 +55,8 @@ function handleSave({conversationId, name}: Chat.History, event?: MouseEvent) {
 		model: 'GPT3_5',
 		temperature: 0.7,
 		topP: 1,
-		maxTokens: 2000
+    sendHistory: usingContext.value,
+		maxTokens: userStore.maxTokensPerRequest
   }).then(() => {
     chatStore.updateHistory(conversationId, { name, isEdit: false})
   }).finally(() => {
@@ -158,7 +160,11 @@ onMounted(() => {
           
         </template>
         <template v-else>
-          <div v-for="(item, index) of dataSources" :key="item.conversationId" class="mb-[10px]">
+          <div
+            v-for="(item, index) of dataSources"
+            :key="item.conversationId"
+            :class="['mb-[10px]', 'overflow-hidden', 'relative', item.model ==='GPT4' ? 'bg-conversation-plus' : '']"
+          >
             <a
               class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]"
               :class="isActive(item.conversationId) && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]', 'pr-14']"

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from "@vitejs/plugin-vue-jsx";
@@ -28,11 +28,11 @@ export default defineConfig((env)=>{
     server: {
       port: 5000,
       https: false,
-      cors: true,
+      cors: false,
       hmr: true,
       proxy: {
         '/api': {
-          target: viteEnv.VITE_APP_API_BASE_URL,
+          target: viteEnv.VITE_APP_API_BASE_URL, // VITE_APP_API_DEV_URL, VITE_APP_API_BASE_URL
           changeOrigin: true,
           // rewrite: (path) => path.replace(/^\/api/, ''),
         },
@@ -58,7 +58,7 @@ export default defineConfig((env)=>{
       assetsDir: 'assets',
       assetsInlineLimit: 4096, // 4k用base64
       cssCodeSplit: true, // css 
-      reportCompressedSize: true, // 异步 chunk 拆分
+      reportCompressedSize: true,
       sourcemap: false,
       commonjsOptions: {
         ignoreTryCatch: false,

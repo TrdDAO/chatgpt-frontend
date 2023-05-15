@@ -21,7 +21,16 @@ export const getConversations = async(queryParams: {page: number,size: number,so
 }
 
 // 新增会话
-export const newConversation = async(bodyParams: {name: string,model: 'GPT3_5',temperature:number, topP:number,maxTokens:number}) => {
+export const newConversation = async(
+	bodyParams: {
+		name: string,
+		model: 'GPT3_5'|'GPT4',
+		temperature:number,
+		topP:number,
+		maxTokens:number,
+		sendHistory: boolean,
+	}
+) => {
 	const data = await post<{
 		conversationId: string,
 		ownerUserId: string,
@@ -29,7 +38,8 @@ export const newConversation = async(bodyParams: {name: string,model: 'GPT3_5',t
 		model: string,
 		temperature: string,
 		topP: string,
-		maxTokens: string
+		maxTokens: string,
+		sendHistory: boolean,
 	}>(`${CHAT_URL}`,{
 		data: bodyParams
 	})
@@ -44,7 +54,8 @@ export const editConversation = async(
 		model: 'GPT3_5',
 		temperature:number,
 		topP:number,
-		maxTokens:number
+		maxTokens:number,
+		sendHistory: boolean,
 	}
 ) => {
 	const data = await put<{

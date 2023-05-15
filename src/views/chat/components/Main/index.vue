@@ -63,17 +63,6 @@ const dataSources = computed(() => {
   return chatStore.getMessagesByConversationId
 })
 
-const equities = computed(() => {
-  return userStore.availableEquities
-});
-
-const maxTokensPerRequest = computed(() => {
-  const maxTokens = equities.value.map((item) => {
-    return item.limitation.maxTokensPerRequest
-  }) as number[]
-  return Math.max(...maxTokens)
-})
-
 // 添加PromptStore
 const promptStore = usePromptStore()
 
@@ -126,7 +115,8 @@ async function onConversation(regeneration?:Chat.Message) {
       model: 'GPT3_5',
       temperature: appStore.temperatureValue,
       topP: 1,
-      maxTokens: maxTokensPerRequest.value
+      maxTokens: userStore.maxTokensPerRequest,
+      sendHistory: usingContext.value,
     }).then((res) => {
       chatStore.addHistoryWithoutRoute(res);
       return Promise.resolve(res.conversationId);
@@ -465,6 +455,7 @@ onUnmounted(() => {
                 <p class="text-left mb-[10px]">注意：</p>
                 <p class="text-left mb-[10px]">1. 每次更换话题，请开启新的聊天窗口。如果上下文的话题不同，会对ChatGPT产生干扰。影响回答的准确性</p>
                 <p class="text-left mb-[10px]">2. 连续对话会加速token消耗，因为连续对话时，都需要将之前的对话内容作为输入。开启新的聊天窗口，可节省token</p>
+                <p class="text-left mb-[10px]">3. GPT4已获得授权，如需使用请联系管理员开通权限</p>
               </div>
             </div>
           </template>
@@ -537,6 +528,16 @@ onUnmounted(() => {
             <template v-else>
               <SvgIcon icon="uis:bars" style="font-size: 20px"/>
             </template>
+          </HoverButton> -->
+          <!-- <HoverButton tooltip="切换到GPT_4">
+            <div class="text-tiny text-[#4f555e] dark:text-white text-[12px] leading-none">
+              <template v-if="true">
+                GPT<br/>3.5
+              </template>
+              <template v-else>
+                GPT<br/>4
+              </template>
+            </div>
           </HoverButton> -->
           <NAutoComplete v-model:value="prompt" :options="searchOptions" :render-label="renderOption">
             <template #default="{ handleInput, handleBlur, handleFocus }">

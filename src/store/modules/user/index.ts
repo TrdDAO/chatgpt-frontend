@@ -21,28 +21,28 @@ export const useUserStore = defineStore('user-store', {
           nickname: '',
           settings: {},
         },
-        tokenUsage: {
-          dayUsage: 0,
-          hourUsage: 0,
-          minuteUsage: 0,
-          monthUsage: 0,
-          totalUsage: 0,
-        }
+        tokenUsages: [],
       },
     }
   },
   getters: {
     infoGetter(state) {
-      return  { ...defaultInfo(), ...state.userInfo }
+      return { ...defaultInfo(), ...state.userInfo }
     },
     profileGetter(state) {
-      return  { ...defualtProfile(), ...state.userInfo.profile }
+      return { ...defualtProfile(), ...state.userInfo.profile }
     },
-    tokenUsageGetter(state) {
-      return  { ...defualtTokenUsage(), ...state.userInfo.tokenUsage }
+    tokenUsagesGetter(state) {
+      const data = state.userInfo.tokenUsages.reduce((result, current) => {
+        if(!result[current.model]) {
+          result[current.model] = current;
+        }
+        return result
+      }, {} as any);
+      return { ...defualtTokenUsage(), ...data}
     },
     availableEquities(state){
-      return  state.userInfo.equities.filter((item:any) => {
+      return state.userInfo.equities.filter((item:any) => {
         return item.status === 'AVAILABLE';
       }).map((item:any) => {
         for(let [key, value] of Object.entries(item.limitation)) {
@@ -50,6 +50,12 @@ export const useUserStore = defineStore('user-store', {
         }
         return item
       })
+    },
+    maxTokensPerRequest(state) {
+      const maxTokens = this.availableEquities.map((item) => {
+        return item.limitation.maxTokensPerRequest
+      }) as number[]
+      return Math.max(...maxTokens)
     }
   },
   actions: {

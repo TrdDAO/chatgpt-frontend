@@ -62,10 +62,13 @@ function toggleUsingContext() {
         {{ currentChatHistory?.name ?? '' }}
       </h1>
       <div class="flex items-center space-x-2">
-        <!-- <HoverButton @click="toggleUsingContext">
-          <span class="text-xl" :class="{ 'text-[#4b9e5f]': usingContext, 'text-[#a8071a]': !usingContext }">
-            <SvgIcon icon="ri:chat-history-line" />
-          </span>
+        <!-- <HoverButton @click="toggleUsingContext" :tooltip="usingContext ? '关闭连续对话':'开启连续对话'" placement="bottom">
+          <template v-if="usingContext">
+            <SvgIcon icon="uis:align-letter-right" style="font-size: 20px"/>
+          </template>
+          <template v-else>
+            <SvgIcon icon="uis:bars" style="font-size: 20px"/>
+          </template>
         </HoverButton> -->
         <HoverButton @click="handleExport" showTooltip placement="bottom">
           <span class="text-xl text-[#4f555e] dark:text-white">
