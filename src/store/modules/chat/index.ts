@@ -30,7 +30,7 @@ export const useChatStore = defineStore('chat-store', {
     // },
     getMessagesByConversationId(state: Chat.ChatState) {
       return state.active ? state.chat.get(state.active) || [] : []
-    }
+    },
   },
 
   actions: {

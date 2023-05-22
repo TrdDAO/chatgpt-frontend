@@ -44,10 +44,10 @@ const { page, size, data, loading, noMore, resetPageData, getPageData } = usePag
   historyData,
 })
 
-const prompt = ref<string>('')
+const prompt = ref<string>('');
 const xhr = ref<any>(null);
-const pending = ref<boolean>(false)
-const inputRef = ref<Ref | null>(null)
+const pending = ref<boolean>(false);
+const inputRef = ref<Ref | null>(null);
 const renderData = reactive({
   content: '',
   errorInfo: null,
@@ -405,7 +405,7 @@ const placeholder = computed(() => {
 })
 
 const buttonDisabled = computed(() => {
-  return !conversationId || pending.value || !prompt.value || prompt.value.trim() === ''
+  return pending.value || !prompt.value || prompt.value.trim() === ''
 })
 
 const footerClass = computed(() => {
@@ -521,24 +521,14 @@ onUnmounted(() => {
               <SvgIcon icon="ri:download-2-line" />
             </span>
           </HoverButton>
-          <!-- <HoverButton v-if="!isMobile" @click="toggleUsingContext" :tooltip="usingContext ? '关闭连续对话':'开启连续对话'">
+          <HoverButton v-if="!isMobile" @click="toggleUsingContext" :tooltip="usingContext ? '关闭连续对话':'开启连续对话'">
             <template v-if="usingContext">
-              <SvgIcon icon="uis:align-letter-right" style="font-size: 20px"/>
+              <SvgIcon icon="ep:chat-dot-square" style="font-size: 20px"/>
             </template>
             <template v-else>
-              <SvgIcon icon="uis:bars" style="font-size: 20px"/>
+              <SvgIcon icon="ep:chat-line-square" style="font-size: 20px"/>
             </template>
-          </HoverButton> -->
-          <!-- <HoverButton tooltip="切换到GPT_4">
-            <div class="text-tiny text-[#4f555e] dark:text-white text-[12px] leading-none">
-              <template v-if="true">
-                GPT<br/>3.5
-              </template>
-              <template v-else>
-                GPT<br/>4
-              </template>
-            </div>
-          </HoverButton> -->
+          </HoverButton>
           <NAutoComplete v-model:value="prompt" :options="searchOptions" :render-label="renderOption">
             <template #default="{ handleInput, handleBlur, handleFocus }">
               <NInput

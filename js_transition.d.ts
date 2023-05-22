@@ -44,14 +44,15 @@ declare namespace Chat {
 	interface History {
 		isLoading?: boolean
 		isEdit?: boolean
+		originName?: string
 		conversationId: string
 		ownerUserId: string
 		name: string
-		originName?: string
 		model: 'GPT3_5'|'GPT4'
-		temperature: string
-		topP: string
-		maxTokens: string
+		sendHistory: boolean
+		temperature: number
+		topP: number
+		maxTokens: number
 	}
 
 	interface ChatState {

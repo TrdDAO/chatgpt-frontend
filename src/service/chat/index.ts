@@ -72,6 +72,21 @@ export const editConversation = async(
 	return data
 }
 
+// 是否发送历史
+export const editHistoryEnabled = async(
+	conversationId:string, 
+	bodyParams: {
+		enabled: boolean,
+	}
+) => {
+	const data = await put<{
+		
+	}>(`${CHAT_URL}/${conversationId}/send-history`,{
+		data: bodyParams
+	})
+	return data
+}
+
 // 删除会话
 export const deleteConversation = async(
 	conversationId:string
