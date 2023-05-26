@@ -56,6 +56,9 @@ export const useUserStore = defineStore('user-store', {
         return item.limitation.maxTokensPerRequest
       }) as number[]
       return Math.max(...maxTokens)
+    },
+    userRole(state) {
+      return state.userInfo.role
     }
   },
   actions: {

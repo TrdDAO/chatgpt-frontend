@@ -22,7 +22,7 @@ const plusLoading = ref(false);
 const collapsed = computed(() => appStore.siderCollapsed)
 const usingContext = computed<boolean>(() => chatStore.sendHistory);
 const isPlus = computed(() => {
-  return userStore.availableEquities.find((item) => {
+  return userStore.userRole === 'Administrator' || userStore.availableEquities.find((item) => {
     return item.limitation.chatModels.includes('GPT4')
   }) ? true : false
 })
